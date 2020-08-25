@@ -45,7 +45,12 @@ const reducer = (state: Model, action: any): Model => {
 
       newState = setPage(state, errPage);
       break;
-
+    case "Notification":
+      // Notification
+      console.log("Got notification: " +  action.msg + "\n---details:---\n" + action.details)
+      break
+    case "NavTo":
+      break;
     default:
       console.log("unknown action ", { action });
       throw new Error(" unknown acton " + action.type);
@@ -61,3 +66,4 @@ function setPage(state: Model, page: PageState<any>): Model {
   resources[page.url] = page;
   return { ...state, resources };
 }
+

@@ -5,43 +5,9 @@ import { usePageLoader } from "../../../model/ps/usePageLoader";
 import ResourceStatus from "../ResourceStatus";
 import { PageState } from "../../../model/model";
 import { useMemo, useState } from "react";
-
-export type BubbleNotes = {
-  ref: string;
-  name: string;
-  notes: BubbleDoc;
-};
-export type BubbleDoc = {
-  $$: "Doc";
-  nodes: BubbleNode[];
-};
-
-export type BubbleNode = {
-  $$: "Note";
-  col: string;
-  name: string;
-  did: string;
-  ref: BubbleRef;
-  text: string;
-  type: string;
-};
-
-export type BubbleNodeOrGroup =
-  | BubbleNode
-  | {
-      $$: "Group";
-      nodes: BubbleNode[];
-    };
-
-export type BubbleRef = {
-  doc: string;
-  pg: number;
-};
-
-type PagePM = {
-  pg: string;
-  notes: BubbleNodeOrGroup[];
-};
+import { BubbleNotes, BubbleNote, BubbleNoteOrGroup } from "./NotesModel";
+import { toPages, filterPM, PagePM } from "./NotesPM";
+import copy from 'clipboard-copy'
 
 // -- TODO - abstract as higher order component
 const Notes = () => {
@@ -49,22 +15,67 @@ const Notes = () => {
   var rurl = `project/${owner}/${pname}/${ref}`; // <-- might be nice for router to calculate this
   const dispatch = useDispatch();
   const page = usePageLoader(rurl, dispatch);
+  console.log(" page ?", {page})
 
-  return page.data ? <NotesView page={page} /> : <ResourceStatus page={page} />;
+  return page.data ? <NotesView page={page} rurl={rurl} /> : <ResourceStatus page={page}  />;
 };
 
 interface NotesProps {
   page: PageState<BubbleNotes>;
+  rurl: string
 }
 
 const style = {
   background: "#F7BECA",
 };
-const NotesView = ({ page }: NotesProps) => {
-  var [filter, setFilter] = useState(false);
+
+const toggleFilter = (filter:any, col:any) => {
+  if (filter.col == col) {
+    return {col:null}
+  } 
+  return {col}
+}
+
+
+
+const toCpTxt = (page:PageState<BubbleNotes>, dispatch:Function) =>  (note:BubbleNote, asQuote:boolean) => {
+  
+  let {ref, name} = page.data!
+  var txt:string
+  
+  if (asQuote) {
+    txt = `${note.text}  ([${ref}] "${name}")`
+  } else {
+    txt = page.url + `?d=${note.did}`
+  }
+  // not sure if this is using the modern api
+  //see: https://developers.google.com/web/updates/2018/03/clipboardapi
+  
+  var ok = copy(txt)
+  dispatch({type:"Notification", msg:"copied quote to clipboard", details:txt})
+
+}
+
+
+
+const NotesView = ({ page, rurl }: NotesProps) => {
+  var filter:any, setFilter:any;
+  ([filter, setFilter] = useState({col:null}));
+  const dispatch = useDispatch();
+
   let data: BubbleNotes = page.data!;
   let { ref, name, notes } = data;
   var pages = useMemo(() => toPages(notes), [notes]);
+
+  if (filter && filter.col != null) {
+    var filterFn = (node: BubbleNote): boolean => {
+      return node.col === filter.col;
+    };
+    pages = filterPM(pages, filterFn);
+  }
+
+
+  const cpTxt = toCpTxt(page, dispatch)
 
   return (
     <div>
@@ -73,10 +84,13 @@ const NotesView = ({ page }: NotesProps) => {
           {"  "} [{ref}] {name}
         </h2>
         <h1>Bubble Notes: </h1>
-        <button onClick={() => setFilter(!filter)}>
-          {filter ? "do filter" : "end filter"}
+        <button onClick={() =>setFilter(toggleFilter(filter, "blue"))}>
+          {filter.col =="blue" ? "-blue" : "+blue"}
         </button>
-        {pages.map((page) => renderPage(page, filter))}
+        <button onClick={() => setFilter(toggleFilter(filter, "yellow"))}>
+          {filter.col == "yellow" ? "-yellow" : " +Yellow"}
+        </button> 
+        {pages.map((page) => renderPage(page, filter, cpTxt))}
       </span>
     </div>
   );
@@ -95,12 +109,11 @@ export const NotesTestView = ({ page }: NotesProps) => {
         </h2>
         <div className="bubble-pg-container">
           <span className="bubble-pg">p100</span>
-          <span>
             <div className="bubble-wrap">
               <div className="bubble">
                 This is some text asodiufh adfs lkhjdfs lkjhsdf alksdjfh al
                 laksjdfh dlasjh fadskljh fdsa lkjhdsf{" "}
-                <a className="bubble-action">ln</a>
+                <a className="bubble-action"  >ln</a>
                 {"  "}
                 <a className="bubble-action">txt</a>
               </div>
@@ -108,102 +121,53 @@ export const NotesTestView = ({ page }: NotesProps) => {
             <div className="bubble-wrap">
               <div className="bubble">This is more text </div>
             </div>
-          </span>
         </div>
       </span>
     </div>
   );
 };
 
-const renderPage = (page: PagePM, filter: boolean) => {
+const renderPage = (page: PagePM, filter: boolean, cpTxt:any) => {
   let { pg, notes } = page;
-  
-  var filterFn = (note:BubbleNodeOrGroup) => {
-    if (note.$$ == "Group") {      
-      
-    }
-
 
   return (
     <div className="bubble-pg-container">
       <span className="bubble-pg">{pg}</span>
-      <span>
-        {notes.filter(notefilterCol()).map((note) => renderNote(note))}
-      </span>
+      {notes.map((note) => renderNote(note, cpTxt))}
     </div>
   );
 };
 
-const renderNote = (note: BubbleNodeOrGroup) => (
+const renderNote = (note: BubbleNoteOrGroup, cpTxt:any) => (
+  note.$$ == "Group" ? 
+  <div className="bubble-group bubble-colour-tagged" >
+    {renderGroup(note.nodes, cpTxt) }
+  </div> 
+:
   <div className="bubble-wrap">
-    {note.$$ == "Group" ? renderGroup(note.nodes) : renderNoteOnly(note)}
+    {renderNoteOnly(note, false, false, cpTxt)}
   </div>
 );
 
-const renderGroup = (nodes: BubbleNode[]) => {
+const renderGroup = (nodes: BubbleNote[],cpTxt:any) => {
   return (
-    <div className="bubble-colour-tagged">
-      <h1>Group goes here</h1>
-      {nodes.map((note) => renderNoteOnly(note))}
+  <div className="bubble-group-inner">
+    
+      {nodes.map((note, i) => renderNoteOnly(note, true,  i === nodes.length -1, cpTxt))}
     </div>
   );
 };
-const renderNoteOnly = (note: BubbleNode) => (
-  <div className="bubble">
-    {note.text}
-    {"  "}
-    <a className="bubble-action">link</a> {"  "}
-    <a className="bubble-action">txt</a>
+
+const renderNoteOnly = (note: BubbleNote, isGroup:boolean = false, isLast:boolean = false , cpTxt:any) => {
+
+ var style = `bubble ${isGroup ? "bubble-g" : ""} ${isLast ? "bubble-g-last ": ""} bubble-${note.col}`
+  return  <div className={style}>
+    {note.text}  
+    {"    "}
+    <a className="bubble-action" onClick={() => cpTxt(note, true)}>(link)</a> {"  "}
+    <a className="bubble-action" onClick={() => cpTxt(note, false)}>(txt)</a>{" "}
+
   </div>
-);
-
-// --- presentation model ---
-/**
- * presentation model for the bubble does
- *
- */
-
-const toPages = (doc: BubbleDoc): PagePM[] => {
-  var out: PagePM[] = [];
-  var pg: number = -999999939; // <-- recall: page from pdf is always a non-negative integer
-  var node: BubbleNodeOrGroup;
-  var pNodes: BubbleNodeOrGroup[] = [];
-  var nextPg;
-  for (node of doc.nodes as any) {
-    if (node.$$ == "Group") {
-      nextPg = node.nodes[0].ref.pg;
-    } else {
-      nextPg = node.ref.pg;
-    }
-
-    ({ pNodes, out, pg } = updatePageGroup(out, pNodes, pg, nextPg));
-
-    pNodes.push(node);
-  }
-
-  if (pNodes.length > 0) {
-    out.push(toPM(pg, pNodes));
-  }
-
-  return out;
-};
-
-const updatePageGroup = (out: any[], pNodes: any[], pg: any, newPg: any) => {
-  if (pg != newPg) {
-    if (pNodes.length > 0) {
-      out.push(toPM(pg, pNodes));
-    }
-    pg = newPg;
-    pNodes = [];
-  }
-  return { pNodes, out, pg };
-};
-
-const toPM = (pg: number, notes: BubbleNodeOrGroup[]) => ({
-  pg: `p${pg}`,
-  notes,
-});
-
-// -- filter functionality
+}
 
 export default Notes;

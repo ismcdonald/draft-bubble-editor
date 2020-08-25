@@ -7,14 +7,10 @@ import { Provider } from "react-redux";
 import { createStore } from "redux";
 import reducer from "./model/reducer";
 
-const store = createStore(reducer);
-
 ReactDOM.render(
-  <Provider store={store}>
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
-  </Provider>,
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
   document.getElementById("root")
 );
 // If you want your app to work offline and load faster, you can change

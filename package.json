@@ -13,6 +13,7 @@
     "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "^5.1.5",
     "axios": "^0.20.0",
+    "clipboard-copy": "^3.1.0",
     "date-fns": "^2.15.0",
     "firebase": "^7.19.0",
     "firebase-admin": "^9.1.1",
@@ -29,8 +30,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "import-data": "rm -rf ./public/project"
+    "_eject": "react-scripts eject",
+    "test:coverage": "react-scripts test --coverage --runInBand --watchAll=false",
+    "import-data": "rm -rf ./public/data/project; cp -R ../kimandleabook/public/project/ ./public/data/project/"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -46,5 +48,14 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/enzyme": "3.10.5",
+    "@types/enzyme-adapter-react-16": "1.0.6",
+    "enzyme": "3.11.0",
+    "enzyme-adapter-react-16": "1.15.3",
+    "enzyme-to-json": "3.5.0",
+    "jest-fetch-mock": "3.0.3",
+    "ts-jest": "26.2.0"
   }
 }

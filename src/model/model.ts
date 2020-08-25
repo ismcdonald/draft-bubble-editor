@@ -13,6 +13,7 @@ export type Model = {
   resources: { [path: string]: PageState<any> };
   config: {
     host: string;
+    ver:number;
   };
 };
 
@@ -31,10 +32,13 @@ export function getPageState(state: Model, url: string): PageState<any> {
   return page;
 }
 
+var uid:number = 1
+
 export const defaultState = (): Model => ({
   page: undefined,
   resources: {},
   config: {
     host: "http://localhost:3000/data",
+    ver: uid++
   },
 });

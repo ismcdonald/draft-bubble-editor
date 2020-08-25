@@ -3,11 +3,35 @@
   "user": "lea",
   "resources": [
     {
+      "ref": "goups",
+      "path": "unit",
+      "name": "groups"
+    },
+    {
+      "ref": "med",
+      "path": "unit",
+      "name": "- med-annotated"
+    },
+    {
       "ref": "ref1",
       "path": "",
       "name": "simple",
       "authors": [
         "Auth, B"
+      ]
+    },
+    {
+      "ref": "simple",
+      "path": "unit",
+      "name": "simple"
+    },
+    {
+      "ref": "Cut18",
+      "path": "child-folder",
+      "name": "Another Cutts Paper",
+      "authors": [
+        "Cutts, Laura",
+        "Author, B"
       ]
     }
   ]

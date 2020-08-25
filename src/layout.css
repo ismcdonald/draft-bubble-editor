@@ -767,6 +767,17 @@ a:hover {
   color: #340410;
 }
 
+.bubble-g {
+  background: #e7afbb;
+  margin: 0px 2px 15px 0px;
+  padding: 4px 8px 4px 10px;
+  border-radius: 5px
+}
+.bubble-g-last {
+  margin-bottom: 2px
+
+}
+
 .bubble-link {
   color: #fceaee;
   font-family: "Fjalla One", sans-serif;
@@ -785,7 +796,7 @@ a:hover {
   color: #e70d3d;
   font-family: "Fjalla One", sans-serif;
 
-  font-size: 21px;
+  font-size: 18px;
   float: left;
 }
 
@@ -795,6 +806,19 @@ a:hover {
   border-radius: 5px;
   margin: 0px 0px 20px 55px;
 }
+
+
+.bubble-group {
+  margin: 0px 0px 20px 59px;
+  padding-left:8px
+}
+
+.bubble-group-inner {
+  background: #f5d0d8;
+  padding: 7px 7px 7px 7px;
+  border-radius: 5px;
+}
+
 .bubble-colour-tagged {
   border-left: 6px solid;
   border-color: #340410;
@@ -814,7 +838,7 @@ a:hover {
 .bubble-action {
   color: #e70d3d;
   font-family: "Fjalla One", sans-serif;
-  font-size: 16px;
+  font-size: 13px;
   text-decoration: underline;
 }
 
@@ -822,4 +846,40 @@ a:hover {
   color: #340410;
   text-decoration: none;
   border-left: 10px;
+}
+
+.bubble-yellow {
+  padding-left: 20px;
+ background: #f9e0e5;
+  border-left: 10px solid;
+  border-color: #e8c05c;
+  margin-left: 30px;
+  font-size: 13px;
+  border-radius: 0px;
+}
+
+.bubble-blue {
+  background: #c6c6ee;
+  padding: 5px 3px 3px 10px;
+  border-radius: 5px;
+}
+
+.bubble-red {
+  background: #f7888a;
+  padding: 5px 3px 3px 10px;
+  border-radius: 5px;
+}
+
+.bubble-green {
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+  border-radius: 0px;
+  border-color: #340410;
+  background:none;
+  color: #340410;
+  font-family: "Fjalla One", sans-serif;
+  font-size: 21px;
+  font-weight: 300;
+  line-height: 30px;
+
 }
