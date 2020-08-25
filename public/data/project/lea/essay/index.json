@@ -1,0 +1,19 @@
+{
+  "project": "essay",
+  "user": "lea",
+  "resources": [
+    {
+      "ref": "Cut18",
+      "path": "child-folder",
+      "name": "cutts"
+    },
+    {
+      "ref": "Cut14",
+      "path": "",
+      "name": "cutts",
+      "authors": [
+        "Cutts, Laura"
+      ]
+    }
+  ]
+}

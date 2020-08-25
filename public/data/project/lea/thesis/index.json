@@ -1,0 +1,14 @@
+{
+  "project": "thesis",
+  "user": "lea",
+  "resources": [
+    {
+      "ref": "ref1",
+      "path": "",
+      "name": "simple",
+      "authors": [
+        "Auth, B"
+      ]
+    }
+  ]
+}
