@@ -1,7 +1,8 @@
-import { Ref, ProjectData } from "./ProjectView";
+import { Ref } from "../../model/domain /Ref";
+import { ProjectData } from "../../model/domain /Project";
 
 const toRefLink = (ref: Ref, url: string) => {
-  return `/${url}/${ref.ref}`;
+  return `${url}/${ref.ref}`;
 };
 
 /**
@@ -33,3 +34,6 @@ export const toFolders = (data: ProjectData, url: string) => {
   }
   return { folders: out, project: data };
 };
+
+
+

@@ -722,6 +722,14 @@ ul li {
   margin-left: 2em;
   text-indent: -2em;
 }
+
+
+ .klb-header > a {
+  font-family: "Dancing Script", cursive;
+  margin: 0;
+  padding: 5px 5px 5px 5px;
+}
+
 h1 {
   color: #340410;
   font-family: "Fjalla One", sans-serif;
@@ -807,6 +815,9 @@ a:hover {
   margin: 0px 0px 20px 55px;
 }
 
+.bubble-wrap-section-title {
+  background: none;   
+}
 
 .bubble-group {
   margin: 0px 0px 20px 59px;
@@ -882,4 +893,24 @@ a:hover {
   font-weight: 300;
   line-height: 30px;
 
+}
+
+.bubble-breadcrumbs-bar {
+  border-radius: 5px;
+  background:white;
+  border-radius:5px;
+  padding: 2px 10px 2px 10px;
+  margin-bottom: 15px;
+}
+
+.bubble-filter-bar {
+  border-radius: 5px;
+  background:white;
+  border-radius:5px;
+  padding: 2px 10px 2px 10px;
+  float:right
+}
+
+.bubble-filter-selected {
+  color: #e70d3d;
 }

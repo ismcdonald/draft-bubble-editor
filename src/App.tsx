@@ -1,5 +1,5 @@
 import * as React from "react";
-import { BrowserRouter, Switch, Route, Redirect, Link } from "react-router-dom";
+//import { BrowserRouter, Switch, Route, Redirect, Lin} from "react-router-dom";
 import CreateLink from "./components/Link/CreateLink";
 import ForgotPassword from "./components/Auth/ForgotPassword";
 import Login from "./components/Auth/Login";
@@ -8,31 +8,78 @@ import LinkList from "./components/Link/LinkList";
 import LinkDetail from "./components/Link/LinkDetail";
 import SearchLinks from "./components/Link/SearchLinks";
 import useAuth from "./components/Auth/useAuth";
-import firebase, { FirebaseContext } from "./firebase";
 import Project from "./components/Project/Project";
 import Layout from "./components/Layout";
 import Notes from "./components/Project/Notes/Notes";
-import { createStore } from "redux";
-import { Provider } from "react-redux";
-import reducer from "./model/reducer";
+import { useCurrentPage } from "./model/ps/usePageLoader";
+import { PageState } from "./model/resource/PageResource"
+import Link from "redux-first-router-link"
+import firebase, { FirebaseContext } from "./firebase";
 
-const reload = () => window.location.reload();
-const store = createStore(reducer as any);
 
-function App() {
+
+interface AppProps {
+  page:any
+}
+
+
+
+const App = () => {
+
   const user = useAuth();
   console.log({ user });
   var o = { user, firebase };
-
+  let page:PageState<any,any> = useCurrentPage();
 
   return (
-    <Provider store={store}>
-      <BrowserRouter>
-        <FirebaseContext.Provider value={o}>
-          <div className="app-container">
-            <Layout>
-              <Link to="/">earn react</Link>
-              <div className="route-container">
+
+    <FirebaseContext.Provider value={o}>
+      <div className="app-container">
+        <Layout>
+          <div className="route-container">
+            {renderPage(page)}
+          </div>
+        </Layout>
+      </div>
+    </FirebaseContext.Provider>
+  
+  )
+}
+
+
+
+  const renderPage = (page:PageState<any,any>) => {
+    
+    
+
+    switch (page.resource.type) {
+      case "home":
+        return <div>
+          <h1>home</h1>
+          <Link to={"project/lea/essay"}>essay</Link>
+        </div>
+      case "project": 
+        return <Project />
+      case "ref":
+        return <Notes/>
+    }
+  
+
+  
+  return  <h1> No component found </h1>
+} 
+
+
+
+export default App
+
+
+//export default App;
+
+
+
+/*
+
                 <Switch>
                   <Route
                     exact
@@ -52,13 +99,4 @@ function App() {
                   <Route path="/new/:page" component={LinkList} />
                   <Route path="/link/:linkId" component={LinkDetail} />
                 </Switch>
-              </div>
-            </Layout>
-          </div>
-        </FirebaseContext.Provider>
-      </BrowserRouter>
-    </Provider>
-  );
-}
-
-export default App;
+                */

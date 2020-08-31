@@ -1,6 +1,7 @@
-import { PageState, Model, getPageState } from "./../model";
+import { getPageStatus, PageState } from './../resource/PageResource';
 import { useEffect, useCallback } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { Model, State } from "../model";
 
 const axios = require("axios");
 
@@ -11,8 +12,14 @@ export const createResourceLoader = (url: string) => async () => {
 };
 
 export const usePage = (url: string) => {
-  return useSelector((s: Model) => getPageState(s, url));
+  return useSelector((s: State) => getPageStatus(s.app, url));
 };
+
+export const useCurrentPage = ():PageState<any,any> => {
+  return useSelector((s:State) => {
+    return s.app.page}
+     ) as PageState<any,any>
+}
 
 /**
  * Page loader
@@ -21,9 +28,15 @@ export const usePage = (url: string) => {
  * @param url
  * @param dispatch
  */
-export const usePageLoader = (url: string, dispatch: any) => {
-  const page: PageState<any> = usePage(url);
-  const loader = useCallback(createResourceLoader(page.fullURL), [url]);
+export const usePageLoader = () => {
+  const page = useCurrentPage()
+
+  //const page: PageState<any,any> = usePage(url);
+  const dispatch = useDispatch()
+
+  let {status} = page
+  const loader = useCallback(createResourceLoader(status.fullURL!), [status]);
+
 
   useEffect(() => {
     const load = async () => {
@@ -35,9 +48,12 @@ export const usePageLoader = (url: string, dispatch: any) => {
         dispatch({ type: "LoadError", page, e });
       }
     };
-    if (!page.isReady && !page.isLoading && !page.errorMsg) {
+    let {status} = page;
+    if (status.fullURL && !status.isReady && !status.isLoading && !status.errorMsg) {
       load();
     }
   }, [loader]);
+
+  
   return page;
 };

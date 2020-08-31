@@ -1,4 +1,4 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# See https://help.github.com/articles/ignoring-.les/ for more about ignoring files.
 
 # dependencies
 /node_modules
@@ -10,7 +10,7 @@
 
 # production
 /build
-/public/project
+/public/data/project
 # misc
 .DS_Store
 .env.local

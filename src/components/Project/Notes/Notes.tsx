@@ -1,29 +1,35 @@
 import * as React from "react";
-import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { usePageLoader } from "../../../model/ps/usePageLoader";
 import ResourceStatus from "../ResourceStatus";
-import { PageState } from "../../../model/model";
-import { useMemo, useState } from "react";
-import { BubbleNotes, BubbleNote, BubbleNoteOrGroup } from "./NotesModel";
+import { useMemo } from "react";
 import { toPages, filterPM, PagePM } from "./NotesPM";
 import copy from 'clipboard-copy'
-
+import {toNoteFilterFn} from './filter'
+import { PageState } from "../../../model/resource/PageResource";
+import { NotesFilter, BubbleNotes, BubbleNote, BubbleNoteOrGroup } from "../../../model/domain /BubbleNotes";
+import { redirect} from "redux-first-router"
+import Link from "redux-first-router-link";
+  
 // -- TODO - abstract as higher order component
 const Notes = () => {
-  const { owner, pname, ref } = useParams() as any;
-  var rurl = `project/${owner}/${pname}/${ref}`; // <-- might be nice for router to calculate this
-  const dispatch = useDispatch();
-  const page = usePageLoader(rurl, dispatch);
-  console.log(" page ?", {page})
 
-  return page.data ? <NotesView page={page} rurl={rurl} /> : <ResourceStatus page={page}  />;
+  const page = usePageLoader();
+  
+  return page.data ? <NotesView page={page} /> 
+                   : <ResourceStatus page={page}  />;
 };
 
+
+
+// -- encodes application state of node filtering
+
+type NotesState = PageState<BubbleNotes, NotesFilter>
+
 interface NotesProps {
-  page: PageState<BubbleNotes>;
-  rurl: string
+  page: NotesState
 }
+
 
 const style = {
   background: "#F7BECA",
@@ -32,102 +38,178 @@ const style = {
 const toggleFilter = (filter:any, col:any) => {
   if (filter.col == col) {
     return {col:null}
-  } 
+  }
   return {col}
 }
+ 
 
 
 
-const toCpTxt = (page:PageState<BubbleNotes>, dispatch:Function) =>  (note:BubbleNote, asQuote:boolean) => {
+
+const toCpTxt = ( page:NotesState, dispatch:Function) =>  (e:MouseEvent, note:BubbleNote, asQuote:boolean) => {
   
   let {ref, name} = page.data!
   var txt:string
-  
+  let {fullURL} = page.status;
+  let {rurl} = page.resource;
+
   if (asQuote) {
     txt = `${note.text}  ([${ref}] "${name}")`
   } else {
-    txt = page.url + `?d=${note.did}`
+    // issue: what we have is the underlying resource url  http:server/model/etc
+    //   we need to construct the resource uri 
+    //   which is a buisness logic that belongs in the reducer  
+
+    var i = fullURL!.indexOf(`/data${rurl}`); // <-- FIX_THIS - hack. Does not belong in the view 
+    var base = fullURL!.substr(0,i);
+    var rurl1 = `${rurl}?note=${note.did}` 
+    txt = `${base}${rurl1}`
   }
-  // not sure if this is using the modern api
-  //see: https://developers.google.com/web/updates/2018/03/clipboardapi
   
   var ok = copy(txt)
-  dispatch({type:"Notification", msg:"copied quote to clipboard", details:txt})
+
+  if (!asQuote && e.shiftKey) {
+    // navigate to link
+    //dispatch(redirect({type:"REF", payload:{ to:txt}} )    ) /// .. {type:"NavTo", rurl:rurl1!})
+    //history.push('/home?note=query', { note:note.did });
+    //window.location.href = txt
+    // -- Q: how to transform this 
+
+    dispatch({type:"REF" , payload:page.resource.params, query:{note:note.did}})  // Q: how to add query?
+
+  } else {
+
+    dispatch({type:"Notification", msg:"copied quote to clipboard", details:txt})
+  }
 
 }
 
 
 
-const NotesView = ({ page, rurl }: NotesProps) => {
-  var filter:any, setFilter:any;
-  ([filter, setFilter] = useState({col:null}));
+
+
+const NotesView = ({ page  }: NotesProps) => {
+  let {rurl} = page.resource
+  let { filter } = page
+  //var filter:any, setFilter:any;
+  //([filter, setFilter] = useState({col:null}));
   const dispatch = useDispatch();
 
   let data: BubbleNotes = page.data!;
-  let { ref, name, notes } = data;
-  var pages = useMemo(() => toPages(notes), [notes]);
 
-  if (filter && filter.col != null) {
-    var filterFn = (node: BubbleNote): boolean => {
-      return node.col === filter.col;
-    };
-    pages = filterPM(pages, filterFn);
-  }
+  let { ref, name, notes, notesAuth } = data;
+  var pagePM = useMemo(() => toPages(notes), [notes]);
 
-
+  
   const cpTxt = toCpTxt(page, dispatch)
 
-  return (
-    <div>
-      <span>
-        <h2>
-          {"  "} [{ref}] {name}
-        </h2>
-        <h1>Bubble Notes: </h1>
-        <button onClick={() =>setFilter(toggleFilter(filter, "blue"))}>
-          {filter.col =="blue" ? "-blue" : "+blue"}
-        </button>
-        <button onClick={() => setFilter(toggleFilter(filter, "yellow"))}>
-          {filter.col == "yellow" ? "-yellow" : " +Yellow"}
-        </button> 
-        {pages.map((page) => renderPage(page, filter, cpTxt))}
-      </span>
-    </div>
-  );
-};
+  const filterFn = toNoteFilterFn(filter!) 
+  const pages = filterFn ? filterPM(pagePM, filterFn) : pagePM // <--- could memoize 
 
-// -- this is to quickly test the css
-export const NotesTestView = ({ page }: NotesProps) => {
-  let data: BubbleNotes = page.data!;
-  let { ref, name, notes } = data;
+  
   return (
     <div>
       <span>
-        <h1>Bubble Notes: </h1>
-        <h2>
-          {"  "} [{ref}] {name}
-        </h2>
-        <div className="bubble-pg-container">
-          <span className="bubble-pg">p100</span>
-            <div className="bubble-wrap">
-              <div className="bubble">
-                This is some text asodiufh adfs lkhjdfs lkjhsdf alksdjfh al
-                laksjdfh dlasjh fadskljh fdsa lkjhdsf{" "}
-                <a className="bubble-action"  >ln</a>
-                {"  "}
-                <a className="bubble-action">txt</a>
-              </div>
-            </div>
-            <div className="bubble-wrap">
-              <div className="bubble">This is more text </div>
-            </div>
+      <FilterUI page={page} />
+
+        <div className={"bubble-breadcrumbs-bar"}>
+        <Link to={"/"}>projects</Link> {" > "}
+        <Link to={`/project/${page.resource.params.user}/${page.resource.params.pname}`}>{page.resource.params.pname}</Link> {" > "}
+        {filterFn ? <>
+          <Link to={page.resource.rurl}>[{page.resource.params.ref}]</Link> {" > "}
+          {page.filter!.note! ?   " ~selection "  : " ~filtered"}
+        </> :
+          `[${page.resource.params.ref}]` 
+        }
         </div>
+   
+
+        <h1>Notes from: "{name}" </h1>
+        {pages.map((page) => renderPage(page, cpTxt))}
       </span>
     </div>
   );
 };
 
-const renderPage = (page: PagePM, filter: boolean, cpTxt:any) => {
+
+const hasCol = (filter:NotesFilter, col:string):boolean => {
+  return filter && filter.col  ?  filter.col.indexOf(col) >= 0 : false
+}
+
+
+
+const toFilterPM = (filter?:NotesFilter):FilterBtnPM[] => {
+  var blue:boolean = hasCol(filter!, "blue")
+  var yellow:boolean = hasCol(filter!, "yellow")
+  var green = hasCol(filter!, "green")
+ 
+  var all = !blue && !yellow && !green
+
+
+
+  return [
+    {label:"all", v:all, ref:"all"},
+    {label:"sections", v:green, ref:"green"},
+    {label:"hilights", v:blue, ref:"blue" },
+    {label:"references", v:yellow, ref:"yellow"}
+  ]
+}
+
+
+
+const navAction = (page:NotesState, col:string) => {
+  var query = undefined;
+  var {filter} = page
+  var newCol:string[]
+  
+  if (col !== "all") {
+    // -- remove colour filter 
+    var oldCol:string[] =  filter && filter.col ? filter.col! : []
+
+    if (hasCol(filter!, col)) {
+      newCol = oldCol.filter(c => (c != col ))   // remove old colour
+    } else {
+      newCol = [...oldCol, col]
+    }
+
+    if (newCol.length > 0)
+      query = {col:newCol.join(".")}
+    } else {
+      query = undefined
+    }
+
+    
+
+    return {type:"REF", payload:page.resource.params, query }
+    
+  }
+    
+  
+  type FilterBtnPM = {label:string, v:boolean, ref:string}
+
+
+
+const FilterUI = ({page}:{page:NotesState}) => {
+  const dispatch = useDispatch() 
+  const filterPM:FilterBtnPM[] = toFilterPM(page.filter)
+  
+    var last = filterPM.length -1
+  return <span className="bubble-filter-bar">
+
+    {filterPM.map((item:FilterBtnPM, i  ) => 
+     (<span >
+        <a className={item.v ? "bubble-filter-selected" : ""} onClick={ (e:React.SyntheticEvent) => dispatch(navAction(page, item.ref))}>{item.label}</a>
+        {i != last ? " | " : ""}
+      </span> ) 
+    )}  
+    
+  </span>
+}
+
+
+
+
+const renderPage = (page: PagePM, cpTxt:any) => {
   let { pg, notes } = page;
 
   return (
@@ -144,7 +226,7 @@ const renderNote = (note: BubbleNoteOrGroup, cpTxt:any) => (
     {renderGroup(note.nodes, cpTxt) }
   </div> 
 :
-  <div className="bubble-wrap">
+  <div className={"bubble-wrap" + (note.col == "green" ? " bubble-wrap-section-title" :"")}>
     {renderNoteOnly(note, false, false, cpTxt)}
   </div>
 );
@@ -164,8 +246,8 @@ const renderNoteOnly = (note: BubbleNote, isGroup:boolean = false, isLast:boolea
   return  <div className={style}>
     {note.text}  
     {"    "}
-    <a className="bubble-action" onClick={() => cpTxt(note, true)}>(link)</a> {"  "}
-    <a className="bubble-action" onClick={() => cpTxt(note, false)}>(txt)</a>{" "}
+    <a className="bubble-action" onClick={(e) => cpTxt(e,note, true)}>(copy)</a> {"  "}
+    <a className="bubble-action" onClick={(e) => cpTxt(e,note, false)}>(link)</a>{" "}
 
   </div>
 }

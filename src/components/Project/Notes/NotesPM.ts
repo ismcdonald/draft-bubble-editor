@@ -1,6 +1,5 @@
-import { BubbleNoteOrGroup, BubbleDoc, BubbleNote } from "./NotesModel";
+import { BubbleDoc, BubbleNoteOrGroup, BubbleNote } from '../../../model/domain /BubbleNotes';
 
-// --- presentation model ---
 
 /**
  * presentation model for the bubble does
@@ -44,8 +43,8 @@ const getNextPage = (node0: BubbleNoteOrGroup, nodes: any[]): number => {
       if (groupPg >= 1) {
         return groupPg;
       }
-    } else if (node.ref) {
-      return node.ref.pg;
+    } else if (node.pg) {
+      return node.pg;
     }
   }
   return -1;

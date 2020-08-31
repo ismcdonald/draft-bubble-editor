@@ -1,35 +1,32 @@
 import * as React from "react";
 import { useMemo } from "react";
-import { PageState } from "../../model/model";
 import { toFolders } from "./toFolders";
-import { Link } from "react-router-dom";
+import { PageState } from "../../model/resource/PageResource";
+import { ProjectData } from "../../model/domain /Project";
 
-export type ProjectData = {
-  project: string;
-  user: string;
-  resources: Ref[];
-};
+import Link from 'redux-first-router-link'
 
-export type Ref = {
-  ref: string;
-  path: string;
-  name: string;
-  authors?: string[];
-};
+
+
+
+export type ProjectFilter = {
+
+} 
+
 
 /**
  * A completely pure renderer of page state ...
  *
  */
-const ProjectView = ({ page }: { page: PageState<ProjectData> }) => {
-  const { folders, project } = useMemo(() => toFolders(page.data!, page.url), [
-    page,
-  ]);
+const ProjectView = ({ page }: { page: PageState<ProjectData, ProjectFilter> }) => {
+  
+
+  const { folders, project } = useMemo(() => toFolders(page.data!, page.resource.rurl), [page]);
 
   return (
     <div>
-      <h1>References: </h1>
-      <h2>Project</h2>
+    <Link to={"/"}>projects</Link> {" > "} {page.resource.params.pname}
+      <h1>Project: "{page.resource.params.pname}" </h1>
       {render(folders)}
     </div>
   );

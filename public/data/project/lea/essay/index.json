@@ -1,0 +1,103 @@
+{
+  "project": "essay",
+  "user": "lea",
+  "resources": [
+    {
+      "ref": "Bienenfeld",
+      "path": "weekend 1/ian",
+      "name": "Self Psychology",
+      "authors": []
+    },
+    {
+      "ref": "Casement91a",
+      "path": "weekend 1/ian",
+      "name": "Object Use and Impingement"
+    },
+    {
+      "ref": "KleinJ87a",
+      "path": "weekend 1/ian",
+      "name": "The Language of Splitting (our need for others and its roots in infancy ch1)",
+      "authors": [
+        "Klein, J"
+      ]
+    },
+    {
+      "ref": "Seagel04",
+      "path": "weekend 1/ian",
+      "name": "Klein Theoretical Contributions (Melanie Klein ch2)",
+      "authors": []
+    },
+    {
+      "ref": "Dowds04a",
+      "path": "weekend 1/ian",
+      "name": "Intersubjectivity (ch4 p106-113)",
+      "authors": [
+        "Dowds, B pdf"
+      ]
+    },
+    {
+      "ref": "Dowds04",
+      "path": "full pdfs",
+      "name": "Beyond the Frustrated Self",
+      "authors": [
+        "Dowds, B"
+      ]
+    },
+    {
+      "ref": "Charles18a",
+      "path": "",
+      "name": "A CONTEMPORARY KLEINIAN: BIONIAN PERSPECTIVE",
+      "authors": [
+        "Charles, M"
+      ]
+    },
+    {
+      "ref": "KleinJ87",
+      "path": "full pdfs",
+      "name": "Our Need for Others and Its Roots in Infancy",
+      "authors": []
+    },
+    {
+      "ref": "Charles18",
+      "path": "other readings",
+      "name": "Introduction to Contemporary Psychoanalysis",
+      "authors": [
+        "Charles, M"
+      ]
+    },
+    {
+      "ref": "Charles18Ch4",
+      "path": "other readings",
+      "name": "A CONTEMPORARY KLEINIAN: BIONIAN PERSPECTIVE",
+      "authors": [
+        "Charles, M copy 2"
+      ]
+    },
+    {
+      "ref": "Mearns&Cooper05",
+      "path": "weekend 2/ian",
+      "name": "TOWARDS A RELATIONAL THERAPY",
+      "authors": []
+    },
+    {
+      "ref": "Kealy",
+      "path": "weekend 1/ian",
+      "name": "theoretical evolution in psychodynamic psychotherapy",
+      "authors": []
+    },
+    {
+      "ref": "Kavanagh07",
+      "path": "",
+      "name": "Sociology in the Age of the Internet",
+      "authors": []
+    },
+    {
+      "ref": "Casement91b",
+      "path": "weekend 1/ian",
+      "name": "Forms of Interactive Communication",
+      "authors": [
+        "Casement, R"
+      ]
+    }
+  ]
+}

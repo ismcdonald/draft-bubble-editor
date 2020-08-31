@@ -14,21 +14,21 @@ const Link = (props: Props) => {
 };
 
 const Header = ({ siteTitle }: { siteTitle: string; children?: any }) => (
-  <header
+  <header 
     style={{
       background: `white`,
-      marginBottom: `35px`,
+      marginBottom: `5px`,
     }}
   >
     <div
       style={{
         margin: `0 auto`,
-        padding: `0px 20px 0px 0px`,
+        padding: `0px 15px 0px 0px`,
       }}
     >
-      <h1 style={{ margin: 0, padding: `10px 20px 20px 20px` }}>
+      <h1 className="klb-header" >
         <Link
-          to="/"
+          to="/" 
           style={{
             color: `#abc`,
             textDecoration: `none`,

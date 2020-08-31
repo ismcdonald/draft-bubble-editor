@@ -9,7 +9,7 @@ import "../layout.css";
 var data = {
   site: {
     siteMetadata: {
-      title: "kimandleabook",
+      title: "KimandLeabook",
     },
   },
 };
