@@ -2,7 +2,7 @@ import * as React from "react";
 import { useMemo } from "react";
 import { toFolders } from "./toFolders";
 import { PageState } from "../../model/resource/PageResource";
-import { ProjectData } from "../../model/domain /Project";
+import { ProjectData } from "../../model/domain/Project";
 
 import Link from 'redux-first-router-link'
 
@@ -47,11 +47,13 @@ const render = (folders: any[]) => {
   );
 };
 
+const hasRef = (ref:any) => (ref && ref.indexOf('_') < 0)
+
 const citation = ({ ref, link, name, authors }: any) => {
   return (
     <div>
       {"["}
-      {ref !== null ? <Link to={link}>{ref}</Link> : <span>{ref}</span>}
+      {hasRef(ref)  ? <Link to={link}>{ref}</Link> : <span>{ref}</span>}
       {']  "'}
 
       <span>{name}</span>
@@ -66,7 +68,7 @@ const renderAuthors = (authors: string[] = []) => {
     <span>
       {authors.map((v) => (
         <span>
-          <a href="temp">{v}</a>
+          <a >{v}</a>
           {" ; "}
         </span>
       ))}

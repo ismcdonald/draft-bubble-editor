@@ -15,6 +15,11 @@ export const usePage = (url: string) => {
   return useSelector((s: State) => getPageStatus(s.app, url));
 };
 
+
+export const useParams = ():any => {
+  var page = useCurrentPage()
+  return page ? page.resource.params : {}
+}
 export const useCurrentPage = ():PageState<any,any> => {
   return useSelector((s:State) => {
     return s.app.page}

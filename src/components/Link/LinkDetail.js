@@ -2,12 +2,18 @@ import React from "react";
 import { FirebaseContext } from "../../firebase";
 import { formatDistanceToNow } from "date-fns";
 import LinkItem from "./LinkItem";
+import { NavToLogin } from "../../model/pageReducer";
+import { useDispatch } from "react-redux";
+import { useParams , useCurrentPage} from "../../model/ps/usePageLoader";
 
-function LinkDetail(props) {
+function LinkDetail() {
+  const dispatch = useDispatch()
   const { firebase, user } = React.useContext(FirebaseContext);
+  const page = useCurrentPage();
+  const params = useParams();
 
-  const contentId = props.match.params.linkId;
-  const [content, setContent] = React.useState(null);
+  const contentId = params.linkId;
+  const [content, setContent] = React.useState(null);  // <-- TODO - cache on page in dispatcher
   const [commentText, setCommentText] = React.useState([]);
 
   React.useEffect(() => {
@@ -25,7 +31,7 @@ function LinkDetail(props) {
 
   function handleAddComment() {
     if (!user) {
-      props.history.push("/login");
+      dispatch(NavToLogin)
     } else {
       var contentRef = firebase.db.collection("content0").doc(contentId);
       contentRef.get().then((doc) => {

@@ -1,5 +1,5 @@
-import { Ref } from "../../model/domain /Ref";
-import { ProjectData } from "../../model/domain /Project";
+import { Ref } from "../../model/domain/Ref";
+import { ProjectData } from "../../model/domain/Project";
 
 const toRefLink = (ref: Ref, url: string) => {
   return `${url}/${ref.ref}`;

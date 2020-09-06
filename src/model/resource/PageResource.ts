@@ -1,4 +1,4 @@
-import { toNoteFilter } from '../domain /BubbleNotes';
+import { toNoteFilter } from '../domain/BubbleNotes';
 import { Model } from "../model"
 import assert from "../util/assert";
 

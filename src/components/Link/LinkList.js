@@ -1,11 +1,17 @@
-import React from "react";
+import * as React from "react";
 import { FirebaseContext } from "../../firebase";
 import LinkItem from "./LinkItem";
+import { useCurrentPage } from "../../model/ps/usePageLoader";
 
-function LinkList(props) {
+function LinkList() {
+  
   const { user, firebase } = React.useContext(FirebaseContext);
   const [content, setContent] = React.useState([]);
-  const isNewPage = props.location.pathname.includes("new");
+  const page = useCurrentPage()
+
+  //const isNewPage = props.location.pathname.includes("new");
+  const isNewPage = page.resource.params.isCreate
+
 
   React.useEffect(() => {
     getLinks(user);
@@ -35,12 +41,12 @@ function LinkList(props) {
         ...doc.data(),
       };
     });
-    console.log(content);
-    setContent(content);
+    console.log({content});
+    setContent(content);  // <--  put in reducer ... 
     return content;
   }
 
-  console.log("x");
+  console.log("-- rendering list ");
 
   return (
     <div>

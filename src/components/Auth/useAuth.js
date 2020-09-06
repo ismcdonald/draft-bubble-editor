@@ -5,6 +5,7 @@ function useAuth() {
 
   useEffect(() => {
     const unsubscribe = firebase.auth.onAuthStateChanged((user) => {
+      console.log(" --- auth state changed ---");
       if (user) {
         setAuthUser(user);
       } else {
@@ -12,7 +13,7 @@ function useAuth() {
       }
     });
     return () => unsubscribe();
-  }, []);
+  }, [authUser]);
 
   return authUser;
 }

@@ -36,3 +36,13 @@
     transform: rotate(360deg);
   }
 }
+
+
+
+/*  style  */
+
+.like-button {
+  font-size: 11px;
+  color: #828282;
+  margin-left: 0.25rem;
+}

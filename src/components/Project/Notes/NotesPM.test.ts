@@ -1,5 +1,5 @@
 import { toPages, PagePM, filterPM } from "./NotesPM";
-import { BubbleNotes, BubbleNode } from "./NotesModel";
+import { BubbleNotes, BubbleNote } from "../../../model/domain/BubbleNotes" 
 
 describe("some functionality ", () => {
   it("should test a simple pmodel", () => {
@@ -11,7 +11,7 @@ describe("some functionality ", () => {
       { pg: "p2", notes: [n2] },
     ]);
 
-    var filterBlue = (node: BubbleNode) => {
+    var filterBlue = (node: BubbleNote) => {
       return node.col == "blue";
     };
     let [p1, p2] = pm;
@@ -54,10 +54,7 @@ const simpleNotes: BubbleNotes = {
         $$: "Note",
         type: "Excerpt",
         text: "Beyond Four Forces: The Evolution of   Psychotherapy",
-        ref: {
-          doc: "beyond four forces: the evolution of psychotherapy",
-          pg: 1,
-        },
+        pg: 1,
         col: "white",
         did: "5c1b584b0f1297239956f5813533e5c1",
       },
@@ -65,10 +62,7 @@ const simpleNotes: BubbleNotes = {
         $$: "Note",
         type: "Excerpt",
         text: "Colette Fleuridas1 and Drew Krafcik2",
-        ref: {
-          doc: "beyond four forces: the evolution of psychotherapy",
-          pg: 2,
-        },
+        pg: 2,
         col: "blue",
         did: "7301ae81b05cf15f0a18a159c6c4c553",
       },
@@ -97,10 +91,7 @@ const groupNotes: BubbleNotes = {
             $$: "Note",
             type: "Excerpt",
             text: "Colette Fleuridas1 and Drew Krafcik2",
-            ref: {
-              doc: "beyond four forces: the evolution of psychotherapy",
-              pg: 1,
-            },
+            pg: 1,
             col: "red",
             did: "6945fd780184374f1c08792d299ee063",
           },
@@ -109,10 +100,7 @@ const groupNotes: BubbleNotes = {
             type: "Excerpt",
             text:
               "which one views the evolution of psycho-  therapy is shaped by historical, sociopolitical, philosophical,   and cultural worldviews and movements, as well as by rele-  vant scientific discoveries, global dev",
-            ref: {
-              doc: "beyond four forces: the evolution of psychotherapy",
-              pg: 1,
-            },
+            pg: 1,
             col: "yellow",
             did: "00381ba4ead51b025c63bb384b6e3990",
           },
@@ -121,10 +109,7 @@ const groupNotes: BubbleNotes = {
             type: "Excerpt",
             text:
               "paradigms that shape the field. The first three of   these forces are commonly presented as psychoanalytic,   behavioral, and humanistic-existential (e.g., Friedlander,   Pieterse, & Lambert, 2012; Ma",
-            ref: {
-              doc: "beyond four forces: the evolution of psychotherapy",
-              pg: 1,
-            },
+            pg: 1,
             col: "green",
             did: "8a2f31021c91ed070b5c8798a28babdb",
           },
@@ -132,10 +117,7 @@ const groupNotes: BubbleNotes = {
             $$: "Note",
             type: "Excerpt",
             text: "field when scholars con",
-            ref: {
-              doc: "beyond four forces: the evolution of psychotherapy",
-              pg: 1,
-            },
+            pg: 1,
             col: "blue",
             did: "76adbb580807252b8bc05139f116021f",
           },
@@ -148,7 +130,6 @@ const groupNotes: BubbleNotes = {
             $$: "Note",
             type: "Comment",
             text: "A comment",
-            ref: undefined,
             col: "green",
             did: "607f3452b14bd4f8db932522ee9d565f",
           },
@@ -156,7 +137,7 @@ const groupNotes: BubbleNotes = {
             $$: "Note",
             type: "Excerpt",
             text: "Textbox #2\nHere is the\nText bix",
-            ref: { doc: "etc", pg: 3 },
+            pg: 3,
             col: "yellow",
             did: "6e6f38c344d9eebbef7706bef26b8cb8",
           },

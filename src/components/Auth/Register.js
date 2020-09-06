@@ -1,13 +1,12 @@
 import React from "react";
 import useFormValidation from "./useFormValidation";
-import validateLogin from "./validateLogin";
 import firebase, { FirebaseContext } from "../../firebase";
 import Link from "redux-first-router-link";
 import { useDispatch } from "react-redux";
-import useAuth from "./useAuth";
 
 import { Grid, Form, Segment, Button, Header, Message, Icon } from "semantic-ui-react";
 import 'semantic-ui-css/semantic.min.css'
+import { validateRegister } from "./validateRegister";
 
 const handleChange2 = () => {
   console.log('change2')
@@ -20,27 +19,30 @@ const INITIAL_STATE = {
   password: "",
 };
 
-function Login(props) {
-  const {
-    handleChange,
-    handleSubmit,
-    handleBlur,
-    values,
-    errors,
-    isSubmitting,
-  } = useFormValidation(INITIAL_STATE, validateLogin, authenticateUser);
+function Register(props) {
+  const {  handleChange, handleSubmit, handleBlur,
+            values,  errors, isSubmitting
+        } = useFormValidation(INITIAL_STATE, validateRegister, authenticateUser);
+  
   const dispatch = useDispatch();
   const [login, setLogin] = React.useState(true);
+  
+  
   const [firebaseErr, setFirebaseErr] = React.useState(null);
 
+
+
+
   async function authenticateUser() {
+
+
     const { name, email, password } = values;
     try {
       const response = login
         ? await firebase.login(email, password)
         : await firebase.register(name, email, password);
       console.log({ response });
-      //dispatch({ type: "HOME" });
+     // dispatch({ type: "HOME" });   // <--  causes crash 
       console.log("==received login");
     } catch (err) {
       console.log(err);
@@ -93,7 +95,7 @@ function Login(props) {
             type="submit"
             className="button pointer mr2"
             disabled={isSubmitting}
-            style={{ background: isSubmitting ? "grey" : "orange" }}
+            style={{ background: isSubmitting ? "grey" : "teal" }}
           >
             Submit
           </button>
@@ -108,18 +110,17 @@ function Login(props) {
       </form>
       <div className="forgot-password">
         <Link to="/forgot">Forgot Password</Link>
-        <Link to="/">home</Link>
-        <Link to={"project/lea/essay"}>essay</Link>
+        
       </div>
 
 
-      <Grid textAlign="center" verticalAlign="middle" className="app">
+      <Grid textAlign="center" verticalAlign="middle" className="appx">
         <Grid.Column style={{ maxWidth: 450 }}>
-          <Header as="h2" icon color="orange" textAlign="center">
-            <Icon name="puzzle piece" color="orange" />
-            Register for DevChat
+          <Header as="h2" icon color="teal" textAlign="center">
+            <Icon name="coffee" color="teal" />
+            Register for Kim and Lea Book on cafetextual 
           </Header>
-          <Form size="large">
+          <Form size="large" onSubmit={handleSubmit}>
             <Segment stacked>
               <Form.Input
                 fluid
@@ -127,27 +128,38 @@ function Login(props) {
                 icon="user"
                 iconPosition="left"
                 placeholder="Username"
-                onChange={handleChange2}
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.username}
+                className={handleInputError(errors, "username")}
+
                 type="text"
               />
 
               <Form.Input
                 fluid
                 name="email"
+                className={handleInputError(errors, "email")}
+
+                value={values.email}
                 icon="mail"
                 iconPosition="left"
                 placeholder="Email Address"
-                onChange={handleChange2}
+                onBlur={handleBlur}
+                onChange={handleChange}
                 type="email"
               />
 
               <Form.Input
                 fluid
                 name="password"
+                className={handleInputError(errors, "password")}
+                value={values.password}
                 icon="lock"
                 iconPosition="left"
                 placeholder="Password"
-                onChange={handleChange2}
+                onBlur={handleBlur}
+                onChange={handleChange}
                 type="password"
               />
 
@@ -157,17 +169,26 @@ function Login(props) {
                 icon="repeat"
                 iconPosition="left"
                 placeholder="Password Confirmation"
-                onChange={handleChange2}
+                className={handleInputError(errors, "Password Confirmation")}
+                onBlur={handleBlur}
+                onChange={handleChange}
                 type="password"
               />
-
-              <Button color="orange" fluid size="large">
+              {(errors || firebaseErr) && 
+                (<Message error>
+                  <h3>Error</h3>
+                  {errors  && displayErrors(errors)}
+                  {firebaseErr && displayErrors([{message:firebaseErr}])}
+                </Message>)}
+              <Button color="teal" fluid size="large">
                 Submit
               </Button>
             </Segment>
           </Form>
           <Message>
             Already a user? <Link to="/login">Login</Link>
+            {" "}<Link to="/">home</Link>
+            {" "}<Link to={"project/lea/essay"}>essay</Link>
           </Message>
         </Grid.Column>
       </Grid>
@@ -177,4 +198,14 @@ function Login(props) {
   );
 }
 
-export default Login;
+
+const displayErrors = errors => {
+  return errors.map((err, i) => (<p key={i}>{err.message}</p>))
+}
+const handleInputError = (errors, inputName) => {
+  return errors.some(error => error.message.toLowerCase().includes(inputName))
+    ? "error"
+    : "";
+};
+
+export default Register;

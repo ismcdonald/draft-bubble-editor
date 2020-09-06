@@ -1,4 +1,4 @@
-import { BubbleNote, NotesFilter } from "../../../model/domain /BubbleNotes"
+import { BubbleNote, NotesFilter } from "../../../model/domain/BubbleNotes"
 
 export const toNoteFilterFn = (filter:NotesFilter) => {
   if (!filter) {
@@ -11,7 +11,10 @@ export const toNoteFilterFn = (filter:NotesFilter) => {
   }
 
   return (bnote:BubbleNote) => {
-    if (col && bnote.col && col.indexOf(bnote.col)  < 0 ) return false
+    if (col) {
+      if (!bnote.col) return false
+      if (col.indexOf(bnote.col)  < 0 ) return false
+    }
     if (note && note.indexOf(bnote.did) < 0) {
       return false
     }

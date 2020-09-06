@@ -3,19 +3,112 @@
   "user": "lea",
   "resources": [
     {
+      "ref": "Holmes17",
+      "path": "core/weekend 2",
+      "name": "Attachment and Psychodynamic Perspectives on Resilience",
+      "authors": [
+        "Holmes, Robert"
+      ]
+    },
+    {
+      "ref": "Karen90",
+      "path": "core/weekend 2",
+      "name": "Becoming Attached",
+      "authors": [
+        "Karen, Robert"
+      ]
+    },
+    {
+      "ref": "Stern98",
+      "path": "core/weekend 2",
+      "name": "Therapeutic Change",
+      "authors": [
+        "Strern, Daniel N"
+      ]
+    },
+    {
+      "ref": "Trevarthen05",
+      "path": "core/weekend 2",
+      "name": "Reflections-on-Infant-Intersubjectivity",
+      "authors": [
+        "Trevarthen"
+      ]
+    },
+    {
+      "ref": "Mearns&Cooper05",
+      "path": "core/weekend 2/ian",
+      "name": "TOWARDS A RELATIONAL THERAPY",
+      "authors": []
+    },
+    {
+      "ref": "Philips98",
+      "path": "core/weekend 2/ian",
+      "name": "Winnicott",
+      "authors": [
+        "Philips, Adam"
+      ]
+    },
+    {
+      "ref": "Winnicott71",
+      "path": "core/weekend 2/ian",
+      "name": "Role of the Mother (cf Playing and Reality)",
+      "authors": [
+        "Winnicott, D"
+      ]
+    },
+    {
+      "ref": "FreudMM",
+      "path": "core/weekend 1",
+      "name": "Mourning and Melancholia",
+      "authors": [
+        "Freud, S"
+      ]
+    },
+    {
       "ref": "Bienenfeld",
-      "path": "weekend 1/ian",
+      "path": "core/weekend 1/ian",
       "name": "Self Psychology",
       "authors": []
     },
     {
       "ref": "Casement91a",
-      "path": "weekend 1/ian",
-      "name": "Object Use and Impingement"
+      "path": "core/weekend 1/ian",
+      "name": "Object Use and Impingement",
+      "authors": []
+    },
+    {
+      "ref": "Casement91b",
+      "path": "core/weekend 1/ian",
+      "name": "Forms of Interactive Communication",
+      "authors": [
+        "Casement, R"
+      ]
+    },
+    {
+      "ref": "Casement91c",
+      "path": "core/weekend 1/ian",
+      "name": "Inner and Outer Realities",
+      "authors": [
+        "Casement, R"
+      ]
+    },
+    {
+      "ref": "Dowds04a",
+      "path": "core/weekend 1/ian",
+      "name": "Intersubjectivity (ch4 p106-113)",
+      "authors": [
+        "Dowds, B pdf"
+      ]
+    },
+    {
+      "ref": "Kealy",
+      "path": "core/weekend 1/ian",
+      "name": "theoretical evolution in psychodynamic psychotherapy",
+      "authors": []
     },
     {
       "ref": "KleinJ87a",
-      "path": "weekend 1/ian",
+      "path": "core/weekend 1/ian",
       "name": "The Language of Splitting (our need for others and its roots in infancy ch1)",
       "authors": [
         "Klein, J"
@@ -23,20 +116,32 @@
     },
     {
       "ref": "Seagel04",
-      "path": "weekend 1/ian",
+      "path": "core/weekend 1/ian",
       "name": "Klein Theoretical Contributions (Melanie Klein ch2)",
       "authors": []
     },
     {
-      "ref": "Dowds04a",
-      "path": "weekend 1/ian",
-      "name": "Intersubjectivity (ch4 p106-113)",
+      "ref": "Brodie20",
+      "path": "What is Object Relations Theory Anyway",
+      "name": "Object Relations and Intersubjective Theories in the Practice of Psychotherapy",
+      "authors": []
+    },
+    {
+      "ref": "Frankland10",
+      "path": "What is Object Relations Theory Anyway",
+      "name": "The Little Psychotherapy Book Object Relations in Practice",
+      "authors": []
+    },
+    {
+      "ref": "Lear15",
+      "path": "What is Object Relations Theory Anyway",
+      "name": "Freud",
       "authors": [
-        "Dowds, B pdf"
+        "Lear, Jonathan"
       ]
     },
     {
-      "ref": "Dowds04",
+      "ref": "Dowds04_",
       "path": "full pdfs",
       "name": "Beyond the Frustrated Self",
       "authors": [
@@ -44,60 +149,46 @@
       ]
     },
     {
-      "ref": "Charles18a",
-      "path": "",
-      "name": "A CONTEMPORARY KLEINIAN: BIONIAN PERSPECTIVE",
-      "authors": [
-        "Charles, M"
-      ]
-    },
-    {
-      "ref": "KleinJ87",
+      "ref": "KleinJ87_",
       "path": "full pdfs",
       "name": "Our Need for Others and Its Roots in Infancy",
       "authors": []
     },
     {
-      "ref": "Charles18",
-      "path": "other readings",
+      "ref": "Charles18_",
+      "path": "other papers",
       "name": "Introduction to Contemporary Psychoanalysis",
       "authors": [
         "Charles, M"
       ]
     },
     {
-      "ref": "Charles18Ch4",
-      "path": "other readings",
+      "ref": "Charles18Ch4_",
+      "path": "other papers",
       "name": "A CONTEMPORARY KLEINIAN: BIONIAN PERSPECTIVE",
       "authors": [
-        "Charles, M copy 2"
+        "Charles, M"
       ]
     },
     {
-      "ref": "Mearns&Cooper05",
-      "path": "weekend 2/ian",
-      "name": "TOWARDS A RELATIONAL THERAPY",
+      "ref": "KleinXa_",
+      "path": "core/weekend 1/ian",
+      "name": "A method for Children",
       "authors": []
     },
     {
-      "ref": "Kealy",
-      "path": "weekend 1/ian",
-      "name": "theoretical evolution in psychodynamic psychotherapy",
-      "authors": []
-    },
-    {
-      "ref": "Kavanagh07",
-      "path": "",
-      "name": "Sociology in the Age of the Internet",
-      "authors": []
-    },
-    {
-      "ref": "Casement91b",
-      "path": "weekend 1/ian",
-      "name": "Forms of Interactive Communication",
+      "ref": "KleinXd_",
+      "path": "core/weekend 2/ian",
+      "name": "Melanie Klein",
       "authors": [
-        "Casement, R"
+        "Symington"
       ]
+    },
+    {
+      "ref": "Winnicott49_",
+      "path": "core/weekend 2/ian",
+      "name": "Hate in the Counter-Transference",
+      "authors": []
     }
   ]
 }

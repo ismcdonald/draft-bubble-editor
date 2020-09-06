@@ -704,6 +704,7 @@ pre tt:after {
   font-family: "Dancing Script";
   font-style: normal;
   font-weight: 400;
+  /*@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500&display=swap');*/ 
   src: url("https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap");
 }
 /* latin */
@@ -913,4 +914,26 @@ a:hover {
 
 .bubble-filter-selected {
   color: #e70d3d;
+}
+
+/* -- c.f firebase app */
+
+.gray {
+  color: #828282;
+}
+
+.like-button {
+  font-size: 11px;
+  color: #828282;
+  margin-left: 0.25rem;
+}
+
+
+
+html,
+body,
+.app-x {
+  height: 100vh;
+  background: #f9e0e5;;
+  padding: 1em;
 }

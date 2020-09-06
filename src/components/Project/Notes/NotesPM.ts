@@ -1,4 +1,4 @@
-import { BubbleDoc, BubbleNoteOrGroup, BubbleNote } from '../../../model/domain /BubbleNotes';
+import { BubbleDoc, BubbleNoteOrGroup, BubbleNote } from '../../../model/domain/BubbleNotes';
 
 
 /**

@@ -1,15 +1,20 @@
-import React from "react";
+import * as React from "react";
 import validateCreateLink from "../Auth/validateCreateLink";
 import useFormValidation from "../Auth/useFormValidation";
 import { FirebaseContext } from "../../firebase";
+import { useDispatch } from "react-redux";
+import { NavToLogin, NavToHome } from "../../model/pageReducer";
 
 const INITIAL_STATE = {
   description: "",
   content: "",
 };
 
-function CreateLink(props) {
+function CreateLink() {
+  console.log(" -- rendering create ---")
   const { firebase, user } = React.useContext(FirebaseContext);
+ 
+  const dispatch = useDispatch()
 
   const { handleChange, handleSubmit, values, errors } = useFormValidation(
     INITIAL_STATE,
@@ -19,9 +24,10 @@ function CreateLink(props) {
 
   function handleCreateLink(values) {
     if (!user) {
-      props.history.push("/login");
+      dispatch(NavToLogin)  // <-- UI should ensure this never happens 
     } else {
       let { description, content } = values;
+
       const newContent = {
         description,
         content,
@@ -35,7 +41,9 @@ function CreateLink(props) {
       };
 
       firebase.db.collection("content0").add(newContent);
-      props.history.push("/");
+      
+      dispatch(NavToHome());
+
     }
   }
   return (
