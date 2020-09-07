@@ -6,6 +6,7 @@ const toRefLink = (ref: Ref, url: string) => {
 };
 
 /**
+ * 
  * Collects references by folder
  *
  */

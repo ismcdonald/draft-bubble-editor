@@ -17,7 +17,7 @@ export const routesMap = {
   
   // -- documents 
   DOC: "/doc",   
-  
+  TESTDOC:"/testdoc/:id",
 
   // -- document api 
   CREATE: "/create",

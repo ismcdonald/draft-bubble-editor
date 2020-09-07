@@ -1,3 +1,4 @@
+import { toTestPageData } from './../doc/Doc';
 import { toNoteFilter } from '../domain/BubbleNotes';
 import { Model } from "../model"
 import assert from "../util/assert";
@@ -64,6 +65,15 @@ export const createPageResource = (state:Model, type:string,  rurl:string, param
   
   var page0 = state.resources[rurl]
   var resource:PageResource = { type:type.toLowerCase(), rurl, params }
+  var status 
+
+  if (type == "TESTDOC") {  // <-- TODO - abstract to get data required resources by type
+    var data = toTestPageData(params.id)     // obviously, don't hardcode this here
+    status = newStatus(state, resource)
+    status.isReady = true
+    status.isLoading = false
+    return {resource, status, data, filter:null} 
+  }
 
 
   var filter =  toFilter( resource, query) || {}
@@ -80,7 +90,7 @@ export const createPageResource = (state:Model, type:string,  rurl:string, param
     }
   }
     // --- iii. create a page resrouces representation
-  var status = newStatus(state, resource)
+  status = newStatus(state, resource)
   return {resource, status, filter}
   
 }

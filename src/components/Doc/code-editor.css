@@ -1,0 +1,104 @@
+
+
+  .CodeEditor-region-1 {
+    border-left: 5px solid #b1156bd3;;
+    margin: 16px 0;
+    padding: 0px 20px;
+  }
+
+  .CodeEditor-region-2 {
+    border-left: 5px solid #0f207ed3;
+    margin: 16px 0;
+    padding: 0px 20px;
+  }
+
+
+
+  .CodeEditor-region-3 { 
+    border-left: 5px solid #61fd5cf3;
+    margin: 16px 0;
+    padding: 0px 20px;
+  }
+
+
+
+ .CodeEditor-region-testsuite-header {
+    border-left: 5px solid #0f207ed3;;
+    margin: 16px 0;
+    padding: 0px 20px;
+ }
+
+
+ .CodeEditor-region-grammar-header {
+    border-left: 5px solid #fd5ce8f3;
+    margin: 16px 0;
+    padding: 0px 20px;
+}
+
+
+.CodeEditor-region-grammar {
+  border-left: 5px solid #a11c44f3;
+  margin: 16px 0;
+  padding: 0px 20px;
+}
+
+.CodeEditor-region-source-header {
+  border-left: 5px solid #61fd5cf3;
+  margin: 16px 0;
+  padding: 0px 20px;
+}
+
+.CodeEditor-region-source {
+  border-left: 5px solid #b34c4cf3;
+  margin: 16px 0;
+  padding: 0px 20px;
+
+}
+.CodeEditor-invalid-region {
+  border-left: 5px solid #888888;
+  margin: 16px 0;
+  padding: 0px 20px;
+
+}
+
+
+
+
+.CodeEditor-test-ok {
+  font-family:'Old Stamper';
+  font-weight:normal;
+  font-size:16px;
+  color: #16a155f3;
+  padding-left: 0;
+  padding-right:0;
+}
+
+.CodeEditor-test-fail {
+  font-family:'Old Stamper';
+  font-weight:normal;
+  font-size:16px;
+  color:#b34c4cf3;
+}
+.CodeEditor-test-run {
+  font-family:'Old Stamper';
+  font-weight:normal;
+  font-size:16px;
+  color:#009bb9;
+}
+
+.CodeEditor-test-run:hover {
+  color:#f256b9
+}
+
+.CodeEditor-test-pending {
+  font-family:'Old Stamper';
+  font-weight:normal;
+  font-size:16px;
+  color:#ffd800;
+}
+
+
+
+* { box-sizing: border-box }
+
+

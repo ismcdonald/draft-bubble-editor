@@ -54,7 +54,8 @@ const renderPage = (page: PageState<any, any>) => {
       return (
         <div>
           <h1>Lea's Projects:</h1>
-          <Link to={"doc"}>doc </Link>{" "}
+          <Link to={"testdoc/text"}>doc/text </Link>{" "}
+          <Link to={"testdoc/quote"}>doc/quote </Link>{" "}
 
           <Link to={"register"}>register </Link>{" "}
           <Link to={"project/lea/essay"}>essay</Link>{" "}
@@ -76,11 +77,13 @@ const renderPage = (page: PageState<any, any>) => {
       return <CreateLink />
 
     case "doc":
+    case "testdoc":
       return <DocEditor />
     case "link": 
       return <LinkDetail/>;
     case "404":
         return <div>Link not found </div>
+
 
     default:
       return <h1> No component found </h1>;
