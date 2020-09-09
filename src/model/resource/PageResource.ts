@@ -2,6 +2,8 @@ import { toTestPageData } from './../doc/Doc';
 import { toNoteFilter } from '../domain/BubbleNotes';
 import { Model } from "../model"
 import assert from "../util/assert";
+import { pathToAction } from 'redux-first-router';
+import { uriToAction } from '../pageReducer';
 
 /**
  * Contains the resource and it's interpretation.
@@ -36,31 +38,66 @@ const  newStatus = (state:Model, resource:PageResource):ResourceStatus => {
   }
 }
 
-export type PageState<a,b> = {
+export type PageState<a,pm> = {
   resource:PageResource  // <-- interpretation of url
   status:ResourceStatus  // <-- underlying representation of data 
   
   data?:a                // <-- the data. maybe this belons in data
-                         //    (assuming a unique representation of the resouce as data)
+                    //    (assuming a unique representation of the resouce as data)
+                    // this isn't a very general pmodel structure   
+  filter?:pm   // <--  presentational transformation of the underlying data
 
-  filter?:b    // <--  presentational transformation of the underlying data
+  // -- TODO - explicitly model relations of dependent page resouces
+  // prev:PageState       <-- in effect a list of dependencies that this page need
+
+
+  
+  links:{[id:string]:string}  // <-- pages that this page loads, but
+
+
 };
 
 
 export function setPage(state: Model, page: PageState<any, any>): Model {
   var resources = { ...state.resources }; // <-- slow for large numbers of resources?
   resources[page.resource.rurl] = page;
-  return { ...state, resources , page};
+  
+  // -- update current page if this resource happens to be the current page
+  // but this breaks also around pmodel
+  // TODO - make page a string
+  if (state.page && state.page.resource.rurl == page.resource.rurl) {
+    return {...state, resources, page}
+  }
+  return {...state, resources}
 }
 
+export const pageTorurl = (page:PageState<any,any>):string => {
+  return page.resource.rurl
+}
 
+export const addPageLinks = (page0:PageState<any,any>, refs:{[id:string]:string}) => {
+  var links = page0.links || {}
+  links = {...links, ...refs}
+  return {...page0, links}
+}
 
 export const getPageStatus = (state:Model, rurl:string) => {
   var page:PageState<any,any> = state.resources[rurl]
   return page
 }
 
-export const createPageResource = (state:Model, type:string,  rurl:string, params?:any, query?:any):PageState<any,any> => {
+
+
+
+/**
+ *  Creates or retrieves a page resource represention for a uri 
+ *   - but does not persist it back into the state
+ *   - if query includes {view:"another/uri/here "}
+ *  `
+ * 
+ * 
+ */
+export const createPageResource = (state:Model, type:string,  rurl:string, params:any, query:any):PageState<any,any> => {
   //var type = rurlToType(rurl)
   
   var page0 = state.resources[rurl]
@@ -72,7 +109,16 @@ export const createPageResource = (state:Model, type:string,  rurl:string, param
     status = newStatus(state, resource)
     status.isReady = true
     status.isLoading = false
-    return {resource, status, data, filter:null} 
+
+    if (query && query.view) {
+      // -- need here to resolve the view 
+      console.log("x'")
+
+    }
+    
+
+
+    return {resource, status, data, filter:null, links:{}} 
   }
 
 
@@ -91,9 +137,24 @@ export const createPageResource = (state:Model, type:string,  rurl:string, param
   }
     // --- iii. create a page resrouces representation
   status = newStatus(state, resource)
-  return {resource, status, filter}
+  return {resource, status, filter, links:{}}
   
 }
+
+
+export const resolvePageResource = (state:Model, rurl:string):Model => {
+  var page = getPageStatus(state, rurl)
+  if (!page) {
+      // TODO - handle errors 
+    const action = uriToAction(rurl)
+    page = createPageResource(state, action.type, rurl, action.payload, action.query )
+    state = setPage(state, page)
+  }
+  return state
+}
+
+
+
 
 
 /**

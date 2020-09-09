@@ -1,0 +1,38 @@
+
+.RichEditor-editor .RichEditor-blockquote {
+  border-left: 5px solid #5899ba;
+  color: rgb(82, 81, 81);
+  font-family: "Lora", sans-serif;
+  font-style: italic;
+  font-size: 21px;
+  line-height: normal;
+
+  margin: 12px 0;
+  padding: 5px  5px 5px 7px;
+} 
+
+ 
+.RichEditor-editor   .RichEditor-p  { 
+  font-size: 18px;
+  font-size: 20px;
+
+}
+.RichEditor-editor   .RichEditor-h1  { 
+  margin-bottom:5px;
+}
+
+.RichEditor-editor   .RichEditor-h2  { 
+  margin-top: 10px;
+  margin-bottom:5px;
+
+}
+
+.RichEditor-editor .ref-link {
+  font-size: 17px;
+  font-family: "Lora", sans-serif;
+
+  float:right; 
+}
+.RichEditor-editor  .quote-text {
+  margin-left: 70px;
+}

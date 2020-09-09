@@ -22,6 +22,7 @@ export type BubbleNote = {
   col: string;
   did: string;
   //ref?: BubbleRef;
+
   pg?:number;
   text: string;
   type: string;
@@ -34,7 +35,7 @@ export type BubbleNoteOrGroup =
       nodes: BubbleNote[];
     };
 
-export type BubbleRef = {
+export type BubbleRef = { // <-- deprecetae
   doc: string;
   pg: number;
 };

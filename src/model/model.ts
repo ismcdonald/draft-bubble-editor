@@ -29,7 +29,7 @@ export const defaultState = (): Model => {
     },
   } as any as Model
 
-  const page = createPageResource(state, "home", "/",{})
+  const page = createPageResource(state, "home", "/",{}, {})
 
   var out = {...setPage(state, page), page}
   return out

@@ -1,3 +1,4 @@
+import { PageState } from './../resource/PageResource';
 import { addAnnotation } from './quote-model';
 import { Doc, Text, Quote, NoteRef, DocContent } from "./Doc"
 import { RawDraftContentBlock, DraftBlockType, EditorState, RawDraftContentState, convertFromRaw, ContentBlock, RawDraftInlineStyleRange, RawDraftEntityRange, ContentState, Modifier } from "draft-js"
@@ -5,21 +6,29 @@ import { createAnnotationDecorator } from "./entity-rendering"
 import {hashDecorator} from "./entity-rendering"
 import { keys } from 'object-hash';
 import { updateContent } from './doc-actions';
+import { showContent } from './draft-util';
+import { PageResource } from '../resource/PageResource';
+import { uriToAction } from '../pageReducer';
+import { docToAnn } from './page-annotation';
 
 var count = 1 // <-- used for unique keys
 
-const h1 = "header-two"
-const p = "paragraph"
-const bq = "blockquote"
+export const h1 = "header-one"
+export const h2 = "header-two"
+export const p = "paragraph"
+export const bq = "blockquote"
 
 var entities = []
 
 
-export const docToDraft = (doc:Doc) =>  {
+export const docToDraft = (doc:Doc, page:any) =>  {
   var blocks:Array<RawDraftContentBlock> = []
   var src:Array<DocContent> = []
 
-  for (var item of doc.vs) {
+  for (var i = 0; i < doc.vs.length; i++) {
+    var item = doc.vs[i]
+    var isFirst = (i == 0);
+
     switch (item.$$) {
       case "Text":
 
@@ -28,10 +37,10 @@ export const docToDraft = (doc:Doc) =>  {
           var header = parseHeader(line) 
           if (header) {
             line = header   // "# This is a header"
-            type = h1 
+            type = isFirst ? h1 : h2
           } else {
             type = p
-          } 
+          }
           blocks.push(lineToRawContentBlock(line, type))
           src.push(item)
         } 
@@ -45,10 +54,10 @@ export const docToDraft = (doc:Doc) =>  {
     }
 
   }
-  return toEditorState(blocks, src)
+  return toEditorState(blocks, src, page)
 }
 
-const HEADER:RegExp = /^#+(.*)*$/
+const HEADER:RegExp = /^#+\s+(.*)*$/
 
 /**
  * returns a string if the text has a header token (ie "# this is a header")  null otherwise 
@@ -63,7 +72,7 @@ export const parseHeader = (v:string) => {
 }
 
 
-function toEditorState<D,S>(blocks:Array<RawDraftContentBlock>, src:Array<DocContent>):EditorState {
+function toEditorState<D,S>(blocks:Array<RawDraftContentBlock>, src:Array<DocContent>, page:any):EditorState {
     var rawContent:RawDraftContentState  = {
         //  blocks: Array<RawDraftContentBlock>;
         //  entityMap: { [key: string]: RawDraftEntity };
@@ -71,6 +80,8 @@ function toEditorState<D,S>(blocks:Array<RawDraftContentBlock>, src:Array<DocCon
           entityMap: {}
   
       } // as RawDraftContentState
+
+
 
     const decorator = hashDecorator;
 
@@ -91,8 +102,10 @@ function toEditorState<D,S>(blocks:Array<RawDraftContentBlock>, src:Array<DocCon
       // ---  TODO abstract iteration around this 
       if (doc.$$ == "Quote") {
         block = content.getBlockForKey(key)
-        content = addAnnotation(content, block, doc)
+        var data = docToAnn(doc, page) 
+        content = addAnnotation(content, block, doc.$$, data)
       }
+
       /// 
       n++ 
       block = content.getBlockForKey(nextKey)
@@ -145,6 +158,8 @@ const groupByType = (blocks:ContentBlock[]) => {
 
 
 export const blockToContent = (block:ContentBlock, content:ContentState) => {
+
+ // showContent(content)
   var key = block.getEntityAt(0)
   if (key) {
     const entity = content.getEntity(key)
@@ -173,7 +188,7 @@ const blockToText = (block:ContentBlock):string =>  {
   return `${(type == h1) ? "# " : ""}${txt}`
 }
 
-export const isHeader = (type:string):boolean => (type == "header-two")
+export const isHeader = (type:string):boolean => (type == h1 || type == h2)
 
 
 
@@ -229,3 +244,6 @@ function lineToRawContentBlock(srcTxt:string, regionType:string, doc?:DocContent
     
   }  //as  RawDraftContentBlock
 }
+
+
+

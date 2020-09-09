@@ -20,6 +20,7 @@ export type Text = {
 export type NoteRef = {   
   $$:"NoteRef"
   ref:string,
+  user:string,   // <-- TODO name these after the labels in the uri 
   project:string
   did?:string
   pg?:number
@@ -37,10 +38,10 @@ export type Doc = {
   $$:"Doc"
   vs:DocContent[]
 }
-
+ 
 
 export const Text = (lines:string[]):Text => ({$$:"Text", lines})
-export const NoteRef = (ref:string, project:string, did:string, pg:number):NoteRef => ({$$:"NoteRef", ref, project, did, pg});
+export const NoteRef = (ref:string, user:string, project:string, did:string, pg?:number):NoteRef => ({$$:"NoteRef", ref, project, user, did, pg});
 export const Quote = (ref:NoteRef, lines:string[]):Quote => ({$$:"Quote", ref, lines});
 export const Doc = (vs:(Text | Quote)[]):Doc => ({$$:"Doc", vs})
 
@@ -48,8 +49,8 @@ export const Doc = (vs:(Text | Quote)[]):Doc => ({$$:"Doc", vs})
 
 // -- for testing 
 
-var ref1 = NoteRef("Ref-1", "essay", "did-goes-here", 3)
-var ref2 = NoteRef("Ref-2", "thesis", "did-goes-here-2", 7)
+var ref1 = NoteRef("Frankland10", "lea", "essay", "", 3)
+var ref2 = NoteRef("Karen90", "lea", "essay", "", 7)
 
 
 export const testDocs = {

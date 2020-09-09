@@ -11,19 +11,20 @@ import useAuth from "./components/Auth/useAuth";
 import Project from "./components/Project/Project";
 import Layout from "./components/Layout";
 import Notes from "./components/Project/Notes/Notes";
-import { useCurrentPage } from "./model/ps/usePageLoader";
+import { useCurrentPage, usePage } from "./model/ps/usePageLoader";
 import { PageState } from "./model/resource/PageResource";
 import Link from "redux-first-router-link";
 import firebase, { FirebaseContext } from "./firebase";
 import Register from "./components/Auth/Register";
 import DocEditor from "./components/Doc/DocEditor";
+import DocApp from "./components/Doc/DocApp";
 
 interface AppProps {
   page: any;
 }
 
 const App = () => {
-  let page: PageState<any, any> = useCurrentPage();
+  let page: PageState<any, any> = usePage(useCurrentPage())
   const user = useAuth();
   console.log({ user });
   var o = { user, firebase };
@@ -48,15 +49,16 @@ const App = () => {
 // </div>
 
 const renderPage = (page: PageState<any, any>) => {
-  switch (page.resource.type) {
+  let {type, rurl} = page.resource
+  switch (type) {
     case "home":
       console.log("rendering home)");
       return (
         <div>
           <h1>Lea's Projects:</h1>
-          <Link to={"testdoc/text"}>doc/text </Link>{" "}
-          <Link to={"testdoc/quote"}>doc/quote </Link>{" "}
-
+          <Link to={"testdoc/text?v=X"}>text </Link>{" "}
+          <Link to={"testdoc/quote?v=y"}>quote </Link>{" "}
+          <Link to={"testdoc/quote2"} >quote2 </Link>{" "}
           <Link to={"register"}>register </Link>{" "}
           <Link to={"project/lea/essay"}>essay</Link>{" "}
 
@@ -64,9 +66,9 @@ const renderPage = (page: PageState<any, any>) => {
       );
 
     case "project":
-      return <Project />;
+      return <Project rurl={rurl} />;
     case "ref":
-      return <Notes />;
+      return <Notes rurl={rurl} />;
     case "login":
       return <Login />;
     case "register":
@@ -78,7 +80,7 @@ const renderPage = (page: PageState<any, any>) => {
 
     case "doc":
     case "testdoc":
-      return <DocEditor />
+      return <DocEditor/>
     case "link": 
       return <LinkDetail/>;
     case "404":

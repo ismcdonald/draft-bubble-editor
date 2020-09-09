@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useDispatch } from "react-redux";
-import { usePageLoader } from "../../../model/ps/usePageLoader";
+import { usePageLoader, useViewNav } from "../../../model/ps/usePageLoader";
 import ResourceStatus from "../ResourceStatus";
 import { useMemo } from "react";
 import { toPages, filterPM, PagePM } from "./NotesPM";
@@ -14,13 +14,35 @@ import {
   BubbleNoteOrGroup,
 } from "../../../model/domain/BubbleNotes";
 import Link from "redux-first-router-link";
+import { actionToURI } from "../../../model/pageReducer";
+import { NoteRef, Quote } from "../../../model/doc/Doc";
+
+
+type Props = {
+  rurl:string
+  quoteFn?:any
+}
 
 // -- TODO - abstract as higher order component
-const Notes = () => {
-  const page = usePageLoader();
+const Notes = ({rurl, quoteFn}:Props) => {
 
-  return page.data ? <NotesView page={page} /> : <ResourceStatus page={page} />;
-};
+  const page = usePageLoader(rurl);
+
+  let {user,pname, ref} = page.resource.params
+  
+  // -- decoate our quote function to get a quote rather than a bubbl enote
+  const quoteFn2 = (note:BubbleNote) => {
+    
+    let {did, text, pg} = note
+
+    var noteRef:NoteRef = NoteRef(ref, user, pname, did, pg  )
+    var quote:Quote = Quote(noteRef, [text])
+    quoteFn(quote)
+  }
+
+
+  return page.data ? <NotesView page={page} quoteFn={quoteFn2}/> : <ResourceStatus page={page} />;
+}; 
 
 // -- encodes application state of node filtering
 
@@ -28,6 +50,7 @@ type NotesState = PageState<BubbleNotes, NotesFilter>;
 
 interface NotesProps {
   page: NotesState;
+  quoteFn?:any
 }
 
 const style = {
@@ -87,7 +110,7 @@ const toCpTxt = (page: NotesState, dispatch: Function) => (
   }
 };
 
-const NotesView = ({ page }: NotesProps) => {
+const NotesView = ({ page, quoteFn }: NotesProps) => {
   let { rurl } = page.resource;
   let { filter } = page;
   //var filter:any, setFilter:any;
@@ -103,23 +126,23 @@ const NotesView = ({ page }: NotesProps) => {
 
   const filterFn = toNoteFilterFn(filter!);
   const pages = filterFn ? filterPM(pagePM, filterFn) : pagePM; // <--- could memoize
+  const nav = useViewNav(rurl)
 
   return (
-    <div>
+    <div className={"doc-container"}>
       <span>
-        <FilterUI page={page} />
+        <FilterUI page={page} nav={nav}/>
 
         <div className={"bubble-breadcrumbs-bar"}>
-          <Link to={"/"}>projects</Link> {" > "}
+          <Link to={nav("/")}>projects</Link> {" > "}
           <Link
-            to={`/project/${page.resource.params.user}/${page.resource.params.pname}`}
-          >
+            to={nav(`/project/${page.resource.params.user}/${page.resource.params.pname}`)}>
             {page.resource.params.pname}
           </Link>{" "}
           {" > "}
           {filterFn ? (
             <>
-              <Link to={page.resource.rurl}>[{page.resource.params.ref}]</Link>{" "}
+              <Link to={nav(page.resource.rurl)}>[{page.resource.params.ref}]</Link>{" "}
               {" > "}
               {page.filter!.note! ? " ~selection " : " ~filtered"}
             </>
@@ -128,8 +151,8 @@ const NotesView = ({ page }: NotesProps) => {
           )}
         </div>
 
-        <h1>Notes from: "{name}" </h1>
-        {pages.map((page) => renderPage(page, cpTxt))}
+        <h1> <h2>[${page.resource.params.ref}]</h2>  "{name}" </h1>
+        {pages.map((page) => renderPage(page, cpTxt, quoteFn))}
       </span>
     </div>
   );
@@ -154,7 +177,7 @@ const toFilterPM = (filter?: NotesFilter): FilterBtnPM[] => {
   ];
 };
 
-const navAction = (page: NotesState, col: string) => {
+const navAction = (page: NotesState, col: string, nav:any) => {
   var query = undefined;
   var { filter } = page;
   var newCol: string[];
@@ -174,12 +197,22 @@ const navAction = (page: NotesState, col: string) => {
     query = undefined;
   }
 
-  return { type: "REF", payload: page.resource.params, query };
+
+
+  var action:any = { type: "REF", payload: page.resource.params, query };
+  var uri = actionToURI(action)
+
+  return nav(uri)
 };
 
 type FilterBtnPM = { label: string; v: boolean; ref: string };
 
-const FilterUI = ({ page }: { page: NotesState }) => {
+type FilterProps = {
+  page: NotesState
+  nav:any
+}
+const FilterUI = ({ page, nav }:FilterProps) => {
+  
   const dispatch = useDispatch();
   const filterPM: FilterBtnPM[] = toFilterPM(page.filter);
 
@@ -191,7 +224,7 @@ const FilterUI = ({ page }: { page: NotesState }) => {
           <a
             className={item.v ? "bubble-filter-selected" : ""}
             onClick={(e: React.SyntheticEvent) =>
-              dispatch(navAction(page, item.ref))
+              dispatch(navAction(page, item.ref, nav ))
             }
           >
             {item.label}
@@ -203,21 +236,21 @@ const FilterUI = ({ page }: { page: NotesState }) => {
   );
 };
 
-const renderPage = (page: PagePM, cpTxt: any) => {
+const renderPage = (page: PagePM, cpTxt: any, quoteFn:any) => {
   let { pg, notes } = page;
 
   return (
     <div className="bubble-pg-container">
       <span className="bubble-pg">{pg}</span>
-      {notes.map((note) => renderNote(note, cpTxt))}
+      {notes.map((note) => renderNote(note, cpTxt, quoteFn))}
     </div>
   );
 };
 
-const renderNote = (note: BubbleNoteOrGroup, cpTxt: any) =>
+const renderNote = (note: BubbleNoteOrGroup, cpTxt: any, quoteFn:any) =>
   note.$$ == "Group" ? (
     <div className="bubble-group bubble-colour-tagged">
-      {renderGroup(note.nodes, cpTxt)}
+      {renderGroup(note.nodes, cpTxt, quoteFn)}
     </div>
   ) : (
     <div
@@ -226,15 +259,15 @@ const renderNote = (note: BubbleNoteOrGroup, cpTxt: any) =>
         (note.col == "green" ? " bubble-wrap-section-title" : "")
       }
     >
-      {renderNoteOnly(note, false, false, cpTxt)}
+      {renderNoteOnly(note, false, false, cpTxt, quoteFn)}
     </div>
   );
 
-const renderGroup = (nodes: BubbleNote[], cpTxt: any) => {
+const renderGroup = (nodes: BubbleNote[], cpTxt: any, quoteFn:any) => {
   return (
     <div className="bubble-group-inner">
       {nodes.map((note, i) =>
-        renderNoteOnly(note, true, i === nodes.length - 1, cpTxt)
+        renderNoteOnly(note, true, i === nodes.length - 1, cpTxt, quoteFn)
       )}
     </div>
   );
@@ -244,7 +277,8 @@ const renderNoteOnly = (
   note: BubbleNote,
   isGroup: boolean = false,
   isLast: boolean = false,
-  cpTxt: any
+  cpTxt: any,
+  quoteFn:any
 ) => {
   var style = `bubble ${isGroup ? "bubble-g" : ""} ${
     isLast ? "bubble-g-last " : ""
@@ -253,13 +287,24 @@ const renderNoteOnly = (
     <div className={style}>
       {note.text}
       {"    "}
+      {quoteFn &&  <>
+        <a className="bubble-action" onClick={(e) => quoteFn(note)}>
+        (quote)
+        </a>
+        {" "}
+      </>
+      }
+
       <a className="bubble-action" onClick={(e) => cpTxt(e, note, true)}>
         (copy)
-      </a>{" "}
-      {"  "}
-      <a className="bubble-action" onClick={(e) => cpTxt(e, note, false)}>
-        (link)
-      </a>{" "}
+      </a>
+      {!quoteFn && 
+      <>
+        {"  "}
+        <a className="bubble-action" onClick={(e) => cpTxt(e, note, false)}>
+          (link)
+        </a>
+      </>}
     </div>
   );
 };

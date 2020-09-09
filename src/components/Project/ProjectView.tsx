@@ -5,6 +5,7 @@ import { PageState } from "../../model/resource/PageResource";
 import { ProjectData } from "../../model/domain/Project";
 
 import Link from 'redux-first-router-link'
+import { useViewNav } from "../../model/ps/usePageLoader";
 
 
 
@@ -12,27 +13,34 @@ import Link from 'redux-first-router-link'
 export type ProjectFilter = {
 
 } 
+type Props = { 
+  page: PageState<ProjectData, ProjectFilter> ,
+}
+
 
 
 /**
  * A completely pure renderer of page state ...
  *
  */
-const ProjectView = ({ page }: { page: PageState<ProjectData, ProjectFilter> }) => {
-  
+const ProjectView = ({ page }:Props) => {
+
+  const nav = useViewNav(page.resource.rurl)
 
   const { folders, project } = useMemo(() => toFolders(page.data!, page.resource.rurl), [page]);
 
   return (
     <div>
-    <Link to={"/"}>projects</Link> {" > "} {page.resource.params.pname}
+      <div className={"bubble-breadcrumbs-bar"}>
+      <Link to={nav("/")}>projects</Link> {" > "} {page.resource.params.pname}
+    </div>
       <h1>Project: "{page.resource.params.pname}" </h1>
-      {render(folders)}
+      {render(folders, nav)}
     </div>
   );
 };
 
-const render = (folders: any[]) => {
+const render = (folders: any[], nav:any) => {
   return (
     <div>
       {folders.map((p) => (
@@ -40,7 +48,7 @@ const render = (folders: any[]) => {
           <Spacer />
           <ColoredLine color="#340410" />
           {p.path ? <h2>{p.path}</h2> : null}
-          {p.items.map((item: any) => citation(item))}
+          {p.items.map((item: any) => citation(item, nav))}
         </div>
       ))}
     </div>
@@ -49,11 +57,11 @@ const render = (folders: any[]) => {
 
 const hasRef = (ref:any) => (ref && ref.indexOf('_') < 0)
 
-const citation = ({ ref, link, name, authors }: any) => {
+const citation = ({ ref, link, name, authors }: any, nav:any) => {
   return (
     <div>
       {"["}
-      {hasRef(ref)  ? <Link to={link}>{ref}</Link> : <span>{ref}</span>}
+      {hasRef(ref)  ? <Link to={nav(link)}>{ref}</Link> : <span>{ref}</span>}
       {']  "'}
 
       <span>{name}</span>

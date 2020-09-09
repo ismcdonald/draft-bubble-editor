@@ -1,6 +1,6 @@
-import { toContentType, isHeader } from './draft-to-doc';
 import { Modifier, SelectionState, ContentState, EditorState, ContentBlock } from 'draft-js/';
-
+import { h1, h2, p} from './draft-to-doc'
+import { toSel, getBlockSel } from './doc-util';
 
 // -- encoding document semantics in low level transformations of draft-js data model
 // 
@@ -21,7 +21,10 @@ export const setHeader = (state:EditorState, toHeader:boolean):ContentState =>  
 
   if (ok && type == "Text" && start == 0 && end == 0) {
 
-    var newBlockType =  toHeader ? "header-two"  : "paragraph"
+    var isFirst = (content.getFirstBlock() == block);
+
+    var newBlockType =  isFirst ? h1 : (  toHeader  ? h2 : p)
+
     if (newBlockType  != block!.getType()) {
       var newContent = Modifier.setBlockType(state.getCurrentContent(), lineSel!, newBlockType)
       return newContent 
@@ -54,104 +57,4 @@ export const removeSel = (state:EditorState) => {
   }
   return state
   
-
-}
-
-/**
- * Utility to destructure selection
- */
-export const toSel = (state:EditorState):{start:number, end:number, key1:any, key2:any} => {
-  var sel:SelectionState = state.getSelection();
-  var key1 = sel.getStartKey()
-  var key2 = sel.getEndKey();
-
-  return {
-    start: sel.getStartOffset(),
-    end: sel.getEndOffset(),
-    key1,
-    key2
-  }
-}
-
-
-
-/**
- *   
- *  When the current  a selection object for the text of an entire block 
- *  
- * @param state 
- *  
- * returns:
- *   ok  - returns true when the selection is within a single block. All other values null otherwise
- *   selection - current selection
- *   block - current block 
- * 
- *   --- these return null unless we have a selection in a single block
- *  
- *   lineSel - selection of the entire line (constructed, but not applied to state)
- *   txt - block text
- *   block - current block
- *   type - the semantic type (ie. Text, Quote)
- * 
- */
-const getBlockSel = (state:EditorState):{
-        ok:boolean, content:ContentState, selection:SelectionState,
-        lineSel?:SelectionState, txt?:string,
-        block?:ContentBlock, type?:string, header?:boolean, start?:Number, end?:Number } => {
-
-  var content = state.getCurrentContent();
-  var selection = state.getSelection();
-  var key = selection.getAnchorKey();
-
-  
-  if (key !== selection.getFocusKey()) {   // <-- quit if selection spans multiple blocks
-    return {ok:false, content, selection};
-  }
-
-  var start = selection.getStartOffset();
-  var end = selection.getEndOffset();
-
-
-  var block = content.getBlockForKey(key);
-  var type = toContentType(block)  
-  var txt = block.getText();
-
-  const lineSel = selectBlock(state)
-  const header = (type == "Text" && isHeader(block.getType())) ? true : undefined
-
-  return {ok:true, content, selection, block, lineSel, txt, type, header, start, end }
-
-}
-
-
-const selectBlock = (state:EditorState):SelectionState => {
-  var selection = state.getSelection();
-  var content = state.getCurrentContent()
-  var key = selection.getAnchorKey();
-  var block = content.getBlockForKey(key);
-
-
-  var sel = createSel(key, 0, key,block.getText().length)
-  
-  return sel
-}
-
-
-const EMPTY_SEL:SelectionState = SelectionState.createEmpty('foo')
-
-
-export function createLineSel(block:ContentBlock  ):SelectionState {
-  var key:string = block.getKey()
-  return createSel(key, 0, key, block.getText().length  )
-}
-
-
-export function createSel(line0Key:string, line0Index:number, line1Key:string, line1Index:number) :SelectionState{
-  return  EMPTY_SEL.merge({
-       anchorKey: line0Key,
-       anchorOffset:  line0Index,
-       focusKey:  line1Key,
-       focusOffset: line1Index,
-       hasFocus: true
-   }) as SelectionState
 }

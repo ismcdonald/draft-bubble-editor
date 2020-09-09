@@ -935,15 +935,18 @@ body,
 .app-x {
   height: 100vh;
   background: #f9e0e5;;
-  padding: 1em;
+  padding: 5px
+}
+
+.doc-background {
+  background: #ffeef1;
+  border-radius:5px;
+  padding: 8px 8px 20px 10px 
+
+
 }
 
 
-.RichEditor-editor .RichEditor-blockquote {
-  border-left: 5px solid rgb(48, 122, 201);
-  color: #666;
-  font-family: "Lora", sans-serif;
-  font-style: italic;
-  margin: 16px 0;
-  padding: 10px 20px;
+.doc-container {
+  max-width:1020px;
 } 

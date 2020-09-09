@@ -1,17 +1,22 @@
 import * as React from "react";
-import { usePageLoader } from "../../model/ps/usePageLoader";
+import { usePageLoader, useViewNav } from "../../model/ps/usePageLoader";
 import ProjectView from "./ProjectView";
 import ResourceStatus from "./ResourceStatus";
 
-const Project = () => {
+type Props =  {
+  rurl:string
+}
 
-  const page = usePageLoader();
+
+const Project = ({rurl}:Props) => {
+  const page = usePageLoader(rurl) ;
+
   console.log(" ---- " + page.status.isReady)
   return page.data ? (
-    <ProjectView page={page} />
+    <ProjectView page={page}  />
   ) : (
     <ResourceStatus page={page} />
   );
-};
+};  
 
 export default Project;

@@ -15,6 +15,7 @@ const modelReducer = (state: Model, action: any): Model => {
     case "LoadStart": 
       ({page}= action);
       page1 = { ...page,status: setLoading(page) };
+        
       newState = setPage(state, page1);
       break;
 
