@@ -1,9 +1,9 @@
 import * as React from 'react'
 import {useState} from 'react'
-import {Editor, EditorState, DraftEditorCommand,  ContentBlock, DraftHandleValue, RichUtils} from 'draft-js';
+import {Editor, EditorState, DraftEditorCommand, ContentState, convertToRaw, RichUtils, DraftHandleValue, ContentBlock} from 'draft-js';
 import 'draft-js/dist/Draft.css';
 import './editor-tweaks.css'
-import { useCurrentPage, useParams, usePage } from '../../model/ps/usePageLoader';
+import { useCurrentPage, usePageLoader } from '../../model/ps/usePageLoader';
 import { docToDraft, draftToDoc  } from '../../model/doc/draft-to-doc';
 import { showContent } from '../../model/doc/draft-util';
 import EditorBlockMap, { myBlockRenderer } from '../../model/doc/view/EditorBlockMap';
@@ -19,7 +19,6 @@ import { Grid, Row, Col } from 'react-flexbox-grid';
 import { useDispatch } from 'react-redux';
 
 import Link from 'redux-first-router-link'
-import { FirebaseContext } from '../../firebase';
 
 
 
@@ -36,38 +35,14 @@ const _globalDoc:{[rurl:string]:Doc}= {}
 
 
 
-const DocEditor = ()  => {
+const DocEditorTest = ()  => {
   var editorState:EditorState;
   var setEditorState0:any;
-  const pageURI = useCurrentPage();
-  const params = useParams() 
-  // -- here's how we load 
-  const page = usePage(pageURI)
+  const pageURI = useCurrentPage()
 
 
-
-  const { firebase, user } = React.useContext(FirebaseContext) as any;
-
-  //const page:PageState<any,any> = usePageLoader(pageURI);
-  React.useEffect(() => {
-    getLink();
-  }, []);
-
-  function getLink() {
-    var contentRef = firebase.db.collection("content0").doc(params.id);
-    contentRef.get().then((doc:any) => {
-      setContent({ ...doc.data(), id: doc.id })
-    })
-  }
-
-  const setContent = (data:any) => {
-    // -- deserialize 
-
-    var doc = JSON.parse(data.docJson)
-    dispatch({type:"SET_DOC", rurl:pageURI, doc})
-
-  }
-
+  const page:PageState<any,any> = usePageLoader(pageURI);
+  
   
   
   
@@ -90,7 +65,7 @@ const DocEditor = ()  => {
 
 
   React.useEffect(() => {
-    if (page.data && page.data.doc) {
+    if (page.data.doc) {
       const doc = page.data.doc
       var state
 
@@ -107,7 +82,7 @@ const DocEditor = ()  => {
         setEditorState(state)
       }
     }
-  }, [page.data])
+  }, [page.data.doc])
 
 
 
@@ -120,26 +95,16 @@ const DocEditor = ()  => {
   const doSave = ()  => {
     if (_globalBaseState[pageURI].getCurrentContent()  !== editorState.getCurrentContent()) {
       
-      // -- serialize
-      var doc = draftToDoc(editorState)
-      var docJson = JSON.stringify(doc);
-
-      var contentRef = firebase.db.collection("content0").doc(params.id);
-
-      // could do this
-      //dispatch({type:"SET_DOC", rurl:pageURI, doc})
-
-      contentRef.get().then((doc:any) => {
-        contentRef.update({docJson}).then( (data:any) => {
+      // -- TODO - invoke actual save process here 
+     // _globalBaseState[pageURI] = editorState  // <-- fakes a save at the model level 
       
-          // -- dispatching an event here breaks
-          //dispatch({type:"SET_DOC", rurl:pageURI, doc:null})
+      // -- round trip serialization ... make sure it works
+      var doc = draftToDoc(editorState)
+      dispatch({type:"SET_DOC", rurl:pageURI, doc})
 
-        })
-        .catch((error:any) => {
-          console.log(' failed  to save ' + pageURI, {error})
-        })
-      })
+
+
+
     }
   }
 
@@ -152,7 +117,7 @@ const DocEditor = ()  => {
  const handleKeyCommand = (command:DraftEditorCommand, editorState:EditorState):DraftHandleValue =>  {
   if (command == "split-block") { 
     //showContent(editorState.getCurrentContent())
-    
+ 
   }
   const newState = RichUtils.handleKeyCommand(editorState, command);
   
@@ -216,24 +181,21 @@ const DocEditor = ()  => {
 
   return (
     <Grid>
-      <Row  >
+      <Row>
 
 
       <Col xs={showView ? 6: 12}>
 
       <div className={"bubble-breadcrumbs-bar"}>
 
-        <Link to="/">
-          <HomeIcon  />
-        </Link> {">"}
-        <Link to={"docs"}>docs</Link> {" > "} 
+      <Link to="/">
+        <HomeIcon  />
+       </Link>
 
-
-        <a  onClick={doSave}  className={requiresSave ? "bubble-filter-selected" : ""} style={{float:"right"}}> 
+         
+          <a  onClick={doSave}  className={requiresSave ? "bubble-filter-selected" : ""} style={{float:"right"}}> 
           {requiresSave ? "save" : "-"}</a>
         
-
-
        
 
             
@@ -300,4 +262,4 @@ function getBlockStyle(block:ContentBlock) {
 
 
 
-export default DocEditor
+export default DocEditorTest

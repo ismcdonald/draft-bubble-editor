@@ -16,9 +16,10 @@ export const routesMap = {
   PROJECT: "/project/:user/:pname",
   REF: "/project/:user/:pname/:ref", 
   
-  // -- documents 
-  DOC: "/doc",   
-  TESTDOC:"/testdoc/:id",
+  // -- documents
+  DOCS:"/docs/:user?", 
+  DOC: "/doc/:user/:id",   
+  TESTDOC:"/testdoc/:user:id",
 
   // -- document api 
   CREATE: "/create",

@@ -22,8 +22,11 @@ function LinkDetail() {
 
   function getLink() {
     var contentRef = firebase.db.collection("content0").doc(contentId);
-    contentRef.get().then((doc) => setContent({ ...doc.data(), id: doc.id }));
+    contentRef.get().then((doc) => {
+      setContent({ ...doc.data(), id: doc.id })
+    })
   }
+
 
   function handleCommentText(value) {
     setCommentText(value);
@@ -42,7 +45,7 @@ function LinkDetail() {
           text: commentText,
         };
         const updatedCommnents = [...previousComments, comment];
-
+          
         contentRef.update({ comments: updatedCommnents });
         setContent((prevState) => ({
           ...prevState,

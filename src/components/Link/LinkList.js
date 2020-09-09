@@ -1,16 +1,19 @@
 import * as React from "react";
 import { FirebaseContext } from "../../firebase";
 import LinkItem from "./LinkItem";
-import { useCurrentPage } from "../../model/ps/usePageLoader";
+import { useCurrentPage, useParams } from "../../model/ps/usePageLoader";
+import HomeIcon from '@material-ui/icons/Home';
+import Link from 'redux-first-router-link'
+
 
 function LinkList() {
   
   const { user, firebase } = React.useContext(FirebaseContext);
   const [content, setContent] = React.useState([]);
   const page = useCurrentPage()
-
+  const params = useParams()
   //const isNewPage = props.location.pathname.includes("new");
-  const isNewPage = page.resource.params.isCreate
+  const {isNewPage} = params
 
 
   React.useEffect(() => {
@@ -50,6 +53,12 @@ function LinkList() {
 
   return (
     <div>
+       <div className="bubble-breadcrumbs-bar">
+        <Link to="/">
+          <HomeIcon  />
+        </Link> 
+      </div>
+      <h1>Recent Notes By Project </h1>
       {renderContent().map((doc, i) => (
         <LinkItem key={doc.id} showCount={true} content={doc} index={i + 1} />
       ))}
@@ -58,3 +67,4 @@ function LinkList() {
 }
 
 export default LinkList;
+

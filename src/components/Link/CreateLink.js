@@ -4,6 +4,9 @@ import useFormValidation from "../Auth/useFormValidation";
 import { FirebaseContext } from "../../firebase";
 import { useDispatch } from "react-redux";
 import { NavToLogin, NavToHome } from "../../model/pageReducer";
+import { Doc , Text } from "../../model/doc/Doc";
+import HomeIcon from '@material-ui/icons/Home';
+import Link from 'redux-first-router-link'
 
 const INITIAL_STATE = {
   description: "",
@@ -27,10 +30,13 @@ function CreateLink() {
       dispatch(NavToLogin)  // <-- UI should ensure this never happens 
     } else {
       let { description, content } = values;
+      var doc = Doc([Text(["# " + description])])
+      var docJson = JSON.stringify(doc)
 
       const newContent = {
         description,
         content,
+        docJson,
         postedBy: {
           id: user.uid,
           name: user.displayName,
@@ -48,6 +54,11 @@ function CreateLink() {
   }
   return (
     <form className="flex flex-column mt3" onSubmit={handleSubmit}>
+        <div className={"bubble-breadcrumbs-bar"}>
+          <Link to="/">
+            <HomeIcon  />
+          </Link> 
+      </div>
       <input
         name="description"
         placeholder="Description for link"

@@ -6,6 +6,7 @@ import Link from "redux-first-router-link"
 import { useDispatch } from "react-redux";
 import { NavToLogin } from "../../model/pageReducer";
 
+import HomeIcon from '@material-ui/icons/Home';
 
 
 function LinkItem({ content, index, showCount }) {
@@ -46,6 +47,49 @@ function LinkItem({ content, index, showCount }) {
 
   return (
     <div className="flex items-start mt2">
+      
+
+      <div className="flex items-center">
+       
+          <div>
+            <h2>
+                <Link to={`/doc/${content.postedBy.name}/${content.id}`}>
+                    {content.description}
+                </Link>
+            </h2>
+          </div>
+          <div className="f6 lh-copy gray">
+             Posted by {content.postedBy.name}{" "}
+            {formatDistanceToNow(content.created)}
+            {" | "} 
+            <Link to={`/link/${content.id}`}>
+              {content.comments.length > 0
+                ? `${content.comments.length} comment${
+                    content.comments.length === 1 ? "" : "s"
+                  }`
+                : "discuss"}
+            </Link>
+            {postedByUser && (
+              <>
+                {" | "}
+                <a className="delete-button" onClick={handleDeleteLink}>
+                  delete
+                </a>
+              </>
+            )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+export default LinkItem
+
+/*
+
+
+    <div className="flex items-start mt2">
       <div className="flex items-center">
         {showCount && <span className="gray">{index}</span>}
         <div className="like-button" onClick={handleLike}>
@@ -53,7 +97,10 @@ function LinkItem({ content, index, showCount }) {
         </div>
         <div className="ml1">
           <div>
-            {content.description}{" "}
+            <h2>
+              {content.description}
+            </h2>
+               {" "}
             <span className="link">({content.content})</span>
           </div>
           <div className="f6 lh-copy gray">
@@ -79,8 +126,4 @@ function LinkItem({ content, index, showCount }) {
         </div>
       </div>
     </div>
-  );
-}
-
-
-export default LinkItem
+*/

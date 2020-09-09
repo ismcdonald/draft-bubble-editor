@@ -157,7 +157,7 @@ const NotesView = ({ page, quoteFn }: NotesProps) => {
          <span style={{fontSize:15}}>[{page.resource.params.ref}]</span> 
      
          </h1>
-        {pages.map((page) => renderPage(page, cpTxt, quoteFn))}
+        {pages.map((page, i) => renderPage(page, cpTxt, quoteFn, i))}
       </span>
     </div>
   );
@@ -225,7 +225,7 @@ const FilterUI = ({ page, nav }:FilterProps) => {
   return (
     <span className="bubble-filter-bar">
       {filterPM.map((item: FilterBtnPM, i) => (
-        <span>
+        <span key={i}>
           <a
             className={item.v ? "bubble-filter-selected" : ""}
             onClick={(e: React.SyntheticEvent) =>
@@ -241,30 +241,30 @@ const FilterUI = ({ page, nav }:FilterProps) => {
   );
 };
 
-const renderPage = (page: PagePM, cpTxt: any, quoteFn:any) => {
+const renderPage = (page: PagePM, cpTxt: any, quoteFn:any, i:any) => {
   let { pg, notes } = page;
 
   return (
-    <div className="bubble-pg-container">
+    <div key={i} className="bubble-pg-container">
       <span className="bubble-pg">{pg}</span>
-      {notes.map((note) => renderNote(note, cpTxt, quoteFn))}
+      {notes.map((note, i) => renderNote(note, cpTxt, quoteFn, i))}
     </div>
   );
 };
 
-const renderNote = (note: BubbleNoteOrGroup, cpTxt: any, quoteFn:any) =>
+const renderNote = (note: BubbleNoteOrGroup, cpTxt: any, quoteFn:any, i:any) =>
   note.$$ == "Group" ? (
-    <div className="bubble-group bubble-colour-tagged">
+    <div  key ={i} className="bubble-group bubble-colour-tagged">
       {renderGroup(note.nodes, cpTxt, quoteFn)}
     </div>
   ) : (
-    <div
+    <div  key ={i}
       className={
         "bubble-wrap" +
         (note.col == "green" ? " bubble-wrap-section-title" : "")
       }
     >
-      {renderNoteOnly(note, false, false, cpTxt, quoteFn)}
+      {renderNoteOnly(note, false, false, cpTxt, quoteFn, i)}
     </div>
   );
 
@@ -272,7 +272,7 @@ const renderGroup = (nodes: BubbleNote[], cpTxt: any, quoteFn:any) => {
   return (
     <div className="bubble-group-inner">
       {nodes.map((note, i) =>
-        renderNoteOnly(note, true, i === nodes.length - 1, cpTxt, quoteFn)
+        renderNoteOnly(note, true, i === nodes.length - 1, cpTxt, quoteFn, i)
       )}
     </div>
   );
@@ -283,13 +283,13 @@ const renderNoteOnly = (
   isGroup: boolean = false,
   isLast: boolean = false,
   cpTxt: any,
-  quoteFn:any
+  quoteFn:any,
+  i:any
+  
 ) => {
-  var style = `bubble ${isGroup ? "bubble-g" : ""} ${
-    isLast ? "bubble-g-last " : ""
-  } bubble-${note.col}`;
+  var style = `bubble ${isGroup ? "bubble-g" : ""} ${isLast ? "bubble-g-last " : ""} bubble-${note.col}`;
   return (
-    <div className={style}>
+    <div key={i} className={style}>
       {note.text}
       {"    "}
       {quoteFn &&  <>

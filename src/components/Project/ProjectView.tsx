@@ -6,6 +6,7 @@ import { ProjectData } from "../../model/domain/Project";
 
 import Link from 'redux-first-router-link'
 import { useViewNav } from "../../model/ps/usePageLoader";
+import HomeIcon from '@material-ui/icons/Home';
 
 
 
@@ -32,8 +33,12 @@ const ProjectView = ({ page }:Props) => {
   return (
     <div>
       <div className={"bubble-breadcrumbs-bar"}>
+      <Link to={nav("/")}>
+        <HomeIcon  />
+       </Link>
+
       <Link to={nav("/")}>projects</Link> {" > "} {page.resource.params.pname}
-    </div>
+      </div>
       <h1>Project: "{page.resource.params.pname}" </h1>
       {render(folders, nav)}
     </div>
@@ -43,12 +48,12 @@ const ProjectView = ({ page }:Props) => {
 const render = (folders: any[], nav:any) => {
   return (
     <div>
-      {folders.map((p) => (
-        <div>
+      {folders.map((p, i) => (
+        <div key={i}>
           <Spacer />
           <ColoredLine color="#340410" />
           {p.path ? <h2>{p.path}</h2> : null}
-          {p.items.map((item: any) => citation(item, nav))}
+          {p.items.map((item: any, i:any) => citation(item, nav, i))}
         </div>
       ))}
     </div>
@@ -57,9 +62,9 @@ const render = (folders: any[], nav:any) => {
 
 const hasRef = (ref:any) => (ref && ref.indexOf('_') < 0)
 
-const citation = ({ ref, link, name, authors }: any, nav:any) => {
+const citation = ({ ref, link, name, authors }: any, nav:any, i:any) => {
   return (
-    <div>
+    <div key={i}>
       {"["}
       {hasRef(ref)  ? <Link to={nav(link)}>{ref}</Link> : <span>{ref}</span>}
       {']  "'}
@@ -74,8 +79,8 @@ const citation = ({ ref, link, name, authors }: any, nav:any) => {
 const renderAuthors = (authors: string[] = []) => {
   return (
     <span>
-      {authors.map((v) => (
-        <span>
+      {authors.map((v, i) => (
+        <span key={i}>
           <a >{v}</a>
           {" ; "}
         </span>

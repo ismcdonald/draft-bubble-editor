@@ -17,7 +17,10 @@ import Link from "redux-first-router-link";
 import firebase, { FirebaseContext } from "./firebase";
 import Register from "./components/Auth/Register";
 import DocEditor from "./components/Doc/DocEditor";
+import DocEditorTest from "./components/Doc/DocEditorTest";
+
 import DocApp from "./components/Doc/DocApp";
+import { RootStateOrAny } from "react-redux";
 
 interface AppProps {
   page: any;
@@ -26,15 +29,14 @@ interface AppProps {
 const App = () => {
   let page: PageState<any, any> = usePage(useCurrentPage())
   const user = useAuth();
-  console.log({ user });
   var o = { user, firebase };
-  console.log({o})
+  //console.log({o})
 
   return (
     <FirebaseContext.Provider value={o}>
       <div className="app-container">
         <Layout user={user}>
-          <div className="route-container">{renderPage(page)}</div>
+          <div className="route-container">{renderPage(page, user)}</div>
         </Layout>
       </div>
     </FirebaseContext.Provider>
@@ -45,22 +47,40 @@ const App = () => {
 // <Link to={"doc"}>doc </Link>
 // <div>
 //  <Link to={"login"}>login</Link>
-// {" "}<Link to={"register"}>register</Link>
+// {" "}<Link to={"resgister"}>register</Link>
 // </div>
 
-const renderPage = (page: PageState<any, any>) => {
+const renderPage = (page: PageState<any, any>, user:any) => {
+
+
   let {type, rurl} = page.resource
   switch (type) {
     case "home":
       console.log("rendering home)");
       return (
         <div>
+          {user && (user.dispayName == "ism")  &&  
+          <div>
+            <h2>admin</h2>
+            <Link to={"testdoc/text?v=X"}>text </Link>{" "}
+            <Link to={"testdoc/quote?v=y"}>quote </Link>{" "}
+            <Link to={"testdoc/quote2"}>quote2 </Link>{" "}
+            <Link to={"register"}>register </Link>{" "}
+
+          </div>}
           <h1>Lea's Projects:</h1>
-          <Link to={"testdoc/text?v=X"}>text </Link>{" "}
-          <Link to={"testdoc/quote?v=y"}>quote </Link>{" "}
-          <Link to={"testdoc/quote2"} >quote2 </Link>{" "}
-          <Link to={"register"}>register </Link>{" "}
-          <Link to={"project/lea/essay"}>essay</Link>{" "}
+            <Link to={"project/lea/essay"}>essay</Link>{" "}
+            <Link to={"project/lea/thesis"}>essay</Link>{" "}
+
+          <h1>Ian's Projects:</h1>
+            <Link to={"project/ian/epistemic"}>epistemic</Link>{" "}
+
+
+          <div>
+              <h1>Recent Notes:</h1>
+              <Link to={"docs"}>notes on essay</Link> {" "}
+            <h2>test docs</h2>
+          </div>
 
         </div>
       );
@@ -77,12 +97,16 @@ const renderPage = (page: PageState<any, any>) => {
       return <ForgotPassword />;
     case "create":
       return <CreateLink />
-
+    case "docs":
+        return <LinkList/>
     case "doc":
-    case "testdoc":
       return <DocEditor/>
+
+    case "testdoc":
+      return <DocEditorTest/>
     case "link": 
       return <LinkDetail/>;
+    
     case "404":
         return <div>Link not found </div>
 
