@@ -1,14 +1,9 @@
-import { PageState } from './../resource/PageResource';
 import { addAnnotation } from './quote-model';
 import { Doc, Text, Quote, NoteRef, DocContent } from "./Doc"
 import { RawDraftContentBlock, DraftBlockType, EditorState, RawDraftContentState, convertFromRaw, ContentBlock, RawDraftInlineStyleRange, RawDraftEntityRange, ContentState, Modifier } from "draft-js"
-import { createAnnotationDecorator } from "./entity-rendering"
 import {hashDecorator} from "./entity-rendering"
-import { keys } from 'object-hash';
 import { updateContent } from './doc-actions';
 import { showContent } from './draft-util';
-import { PageResource } from '../resource/PageResource';
-import { uriToAction } from '../pageReducer';
 import { docToAnn } from './page-annotation';
 
 var count = 1 // <-- used for unique keys
@@ -32,12 +27,13 @@ export const docToDraft = (doc:Doc, page:any) =>  {
     switch (item.$$) {
       case "Text":
 
-        for (var line of item.lines) { 
+        for ( var j = 0; j < item.lines.length; j++) { 
+          var line = item.lines[j]
           var type = p  
           var header = parseHeader(line) 
-          if (header) {
+          if (header != null) {
             line = header   // "# This is a header"
-            type = isFirst ? h1 : h2
+            type = j == (0 && isFirst) ? h1 : h2
           } else {
             type = p
           }
@@ -66,7 +62,7 @@ const HEADER:RegExp = /^#+\s+(.*)*$/
 export const parseHeader = (v:string) => {
   var matchArr = HEADER.exec(v);
   if (matchArr) {
-    return matchArr[1];
+    return matchArr[1] || "";
   }
   return null
 }
@@ -163,9 +159,13 @@ export const blockToContent = (block:ContentBlock, content:ContentState) => {
   var key = block.getEntityAt(0)
   if (key) {
     const entity = content.getEntity(key)
-    var data:DocContent = entity.getData() 
+    var data = entity.getData()    
     return data
   }
+  const txt = block.getText()
+  console.log(` block has no annotation type: ${block.getType()}  key: ${block.getKey()} "${txt}"`)
+  showContent(content)
+  console.log('=== end ')
   return null
 }
 
@@ -177,7 +177,7 @@ const toContent = ({type, items}:{type:string, items:ContentBlock[]}, content:Co
     case "Quote":
       var quoteBlock = items[0]
       var quote = blockToContent(quoteBlock, content )
-      return quote
+      return quote.doc
 
   }
 }
@@ -185,7 +185,7 @@ const toContent = ({type, items}:{type:string, items:ContentBlock[]}, content:Co
 const blockToText = (block:ContentBlock):string =>  {
   var type = block.getType()
   var txt = block.getText()
-  return `${(type == h1) ? "# " : ""}${txt}`
+  return  `${isHeader(type) ? "# " : ""}${txt}`
 }
 
 export const isHeader = (type:string):boolean => (type == h1 || type == h2)

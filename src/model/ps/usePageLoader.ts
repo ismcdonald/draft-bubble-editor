@@ -58,7 +58,7 @@ const toViewNav = (page:PageState<any,any>) => {
   var base = {type:type.toUpperCase(), payload}
   
   return (view:string) => {
-    return {...base, query:{view}} // <-- a redux-first-router action
+    return {...base, query:{view, showView:true}} // <-- a redux-first-router action
   }
 
 }

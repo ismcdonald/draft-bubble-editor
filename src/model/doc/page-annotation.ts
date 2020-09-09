@@ -25,7 +25,7 @@ export const docToAnn = (doc:Quote, page:PageState<any,any>):any =>  {
   var view = `/project/${nr.user}/${nr.project}/${nr.ref}`
 
   // TODO - abstact 
-  var ref = {type:r.type.toUpperCase(), payload: r.params, query:{view}}
+  var ref = {type:r.type.toUpperCase(), payload: r.params, query:{view, showView:true}}
   //var ref = {type:"TESTDOC", payload: { id:"quote2", query:{view:"/project/lea/essay/Kealy"}}}
   
   

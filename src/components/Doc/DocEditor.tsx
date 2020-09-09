@@ -9,61 +9,103 @@ import { showContent } from '../../model/doc/draft-util';
 import EditorBlockMap, { myBlockRenderer } from '../../model/doc/view/EditorBlockMap';
 
 import { setHeader, updateContent, removeSel } from '../../model/doc/doc-actions';
-import { addContent } from '../../model/doc/actions/AddRef';
-import { NoteRef, DocContent, Quote } from '../../model/doc/Doc';
+import { addQuote } from '../../model/doc/actions/AddQuote';
+import { Quote, Doc } from '../../model/doc/Doc';
 import { PageState } from '../../model/resource/PageResource';
 import { SecondPage } from './SecondPages';
 import assert from '../../model/util/assert';
-
-
+import HomeIcon from '@material-ui/icons/Home';
 import { Grid, Row, Col } from 'react-flexbox-grid';
+import { useDispatch } from 'react-redux';
+
+import Link from 'redux-first-router-link'
 
 
 
 
 
+// -- mechanim to persist unsaved data in the view 
+//  (to avoid an invocation of the reducer)
+//  -- latest state in editor
+const _globalState:{[rurl:string]:EditorState}= {}
+// latest state generated from saved
+const _globalBaseState:{[rurl:string]:EditorState}= {}
+// last doc recieved from model form whch saved was generated from 
+const _globalDoc:{[rurl:string]:Doc}= {}
 
-var count = 1;
+
 
 const DocEditor = ()  => {
-  var editorState:any;
-  var setEditorState:any;
+  var editorState:EditorState;
+  var setEditorState0:any;
   const pageURI = useCurrentPage()
   const page:PageState<any,any> = usePageLoader(pageURI);
-  var viewPage = page.links.view;
-  var projectPage = page.links.project;
+  const dispatch = useDispatch();
+  
+  const {showView} = page.filter; 
 
-  ([editorState, setEditorState] = React.useState(
-    () => EditorState.createEmpty(),
-  )); 
+  console.log(`+++ got showview : ${showView}`);
+  ([editorState, setEditorState0] = React.useState(  () => EditorState.createEmpty())); 
+  let [requiresSave, setRequireSave] = useState(false)
 
-  React.useEffect(() => {
-    if (page.data.doc) {
-       var state = docToDraft(page.data.doc, page)
-       setEditorState(state)
-    }
-  }, [page.data.doc])
-
-
-  const doInsert = (e:any) => {
-    var ref:NoteRef = NoteRef("Seagel04", "lea", "essay", "", 3)
-    var quote:DocContent = Quote(ref, ["INSERTED QUOTE 1 "])
-
-    var state = addContent(editorState, quote, page)
-    setEditorState(state)
+  const setEditorState = (state:EditorState) => {
+ 
+    _globalState[pageURI] = state  // <-- cache in case we navigage away
+    var requiresSave = (state.getCurrentContent() !== _globalBaseState[pageURI].getCurrentContent())
+    setEditorState0(state)
+    setRequireSave(requiresSave)
 
   }
 
 
-  const [serialized, setSerialized] = useState([""])
+  React.useEffect(() => {
+    if (page.data.doc) {
+      const doc = page.data.doc
+      var state
 
+      // -- retrieve from cache 
+      if (_globalDoc[pageURI] == doc) {
+        state = _globalState[pageURI]  // <-- last state, not necessarily saved
+        setEditorState(state)
+      } else {
+
+        state = docToDraft(page.data.doc, page)
+        showContent(state.getCurrentContent())
+       _globalDoc[pageURI] =  page.data.doc
+       _globalBaseState[pageURI] = state
+        setEditorState(state)
+      }
+    }
+  }, [page.data.doc])
+
+
+
+
+
+  const [saveInProgress, setSaveInProgress] = useState(false);
     
   //var editorState = docToDraft(page.data.doc)
+
+  const doSave = ()  => {
+    if (_globalBaseState[pageURI].getCurrentContent()  !== editorState.getCurrentContent()) {
+      
+      // -- TODO - invoke actual save process here 
+     // _globalBaseState[pageURI] = editorState  // <-- fakes a save at the model level 
+      
+      // -- round trip serialization ... make sure it works
+      var doc = draftToDoc(editorState)
+      dispatch({type:"SET_DOC", rurl:pageURI, doc})
+
+
+
+
+    }
+  }
 
   const onChange = (state:any) => {
     if (state !== editorState) {
       setEditorState(state)
-    }
+    } 
   }
 
  const handleKeyCommand = (command:DraftEditorCommand, editorState:EditorState):DraftHandleValue =>  {
@@ -90,11 +132,28 @@ const DocEditor = ()  => {
   const onTab = (e:any) => {
 
     e.preventDefault()
+
+    if (e.altKey) {
+      doSave()
+      return 
+    } 
+
     var content = editorState.getCurrentContent();
     var newContent = setHeader(editorState, !e.shiftKey)
     if (newContent !==  content) {
       var newEditorState = updateContent(editorState, newContent)
       onChange(removeSel(newEditorState))
+    } else {
+      if (e.shiftKey) {
+        let {type, params:payload} = page.resource
+        var view = page.links.view
+        let showView = !(page.filter.showView)
+        let query = {showView, view } 
+        type = type.toUpperCase()
+        console.log(" == toggle show " + showView)
+        dispatch({type, payload, query})
+      }
+
     }
 
     //const maxDepth = 4;
@@ -108,12 +167,8 @@ const DocEditor = ()  => {
 
   
   const quoteFn = (quote:Quote) => {
-    console.log(`-- quoting: [${quote.ref}] ${quote.lines[0]}`)
-  
-
-    var state = addContent(editorState, quote, page)
+    var state = addQuote(editorState, quote, page)
     setEditorState(state)
-
   }
 
 
@@ -123,13 +178,21 @@ const DocEditor = ()  => {
       <Row>
 
 
-      <Col xs={6}>
+      <Col xs={showView ? 6: 12}>
 
       <div className={"bubble-breadcrumbs-bar"}>
-          <a style={{float:"right"}}> save</a>
-            <a onClick={() => setSerialized(doSerialize(editorState))}>serialize</a>
-            {" |  "}
-            <a onClick={doInsert}>insert</a>
+
+      <Link to="/">
+        <HomeIcon  />
+       </Link>
+
+         
+          <a  onClick={doSave}  className={requiresSave ? "bubble-filter-selected" : ""} style={{float:"right"}}> 
+          {requiresSave ? "save" : "-"}</a>
+        
+       
+
+            
          </div>
 
 
@@ -148,13 +211,14 @@ const DocEditor = ()  => {
           placeholder="Tell a story..." />
       </div>
     </Col>
-
+{ showView && 
       <Col xs={6 } >
       <div className="doc-container">
           <SecondPage rurl={viewURL} quoteFn={quoteFn} />
       </div>
     
      </Col>
+}
 
 
   
@@ -192,25 +256,4 @@ function getBlockStyle(block:ContentBlock) {
 
 
 
-
-const doSerialize = (editorState:EditorState):string[] => {
-  count++;
-  var doc = draftToDoc( editorState)
-  var content = editorState.getCurrentContent()
-  var out = convertToRaw(content) 
-  var json = JSON.stringify(out, null, 2)
-  console.log('----')
-
-  //var json = JSON.stringify(doc, null, 2)
-  //console.log(json);
-  return json.split('\n')
-  //return `${count} \n ${JSON.stringify(doc, null, 2)} \n ---- \n ${showContent(editorState.getCurrentContent())}`
-}
-
-
-
 export default DocEditor//
-
-//         <h2>serialized</h2>
-      
-          //{(serialized! || []).map((v:string) => <div>{v}</div>)}

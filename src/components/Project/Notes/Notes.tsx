@@ -150,8 +150,13 @@ const NotesView = ({ page, quoteFn }: NotesProps) => {
             `[${page.resource.params.ref}]`
           )}
         </div>
+          
 
-        <h1> <h2>[${page.resource.params.ref}]</h2>  "{name}" </h1>
+        <h1 style={{textAlign:"center"}}>  {name} 
+        {"  "}
+         <span style={{fontSize:15}}>[{page.resource.params.ref}]</span> 
+     
+         </h1>
         {pages.map((page) => renderPage(page, cpTxt, quoteFn))}
       </span>
     </div>

@@ -14,8 +14,7 @@
  
 .RichEditor-editor   .RichEditor-p  { 
   font-size: 18px;
-  font-size: 20px;
-
+  font-family:Verdana,arial,helvetica
 }
 .RichEditor-editor   .RichEditor-h1  { 
   margin-bottom:5px;

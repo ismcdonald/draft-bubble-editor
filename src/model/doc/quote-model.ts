@@ -1,4 +1,3 @@
-import { DocContent } from "./Doc";
 import { ContentBlock, ContentState, Modifier } from "draft-js";
 import { createLineSel } from "./doc-util";
 

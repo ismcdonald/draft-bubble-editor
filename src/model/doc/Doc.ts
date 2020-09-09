@@ -60,10 +60,9 @@ export const testDocs = {
   quote:Doc([Text(["text"]), Quote(ref1, ["A quote from Refernce one"])  ]),
   quote2:Doc([
              Text(["# Some longe textr", "more text"]), 
-             Quote(ref1, ["A quote from Refernce one"]),
+             Quote(ref1, ["A Fake quote from Refernce one"]),
              Text(["# 2nd header", "and more text"]), 
-             Quote(ref2, ["A quote from second ref.A quote from second ref .A quote from second ref A quote from second ref.A quote from second ref"]),
-            
+             Quote(ref2, ["A (fake) quote from second ref.A quote from second ref .A quote from second ref A quote from second ref.A quote from second ref"]),
             ])
 
   

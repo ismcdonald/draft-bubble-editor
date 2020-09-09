@@ -1,5 +1,5 @@
 import { Model, defaultState } from "./model";
-import { PageState, setLoading, setPage, setReady, setErr } from "./resource/PageResource";
+import { PageState, setLoading, setPage, setReady, setErr, getPageStatus } from "./resource/PageResource";
 
 const modelReducer = (state: Model, action: any): Model => {
   if (!state) {
@@ -42,7 +42,16 @@ const modelReducer = (state: Model, action: any): Model => {
       const url = action.url
       console.log("TODO - navigate to " + action.url)
       break;
-    
+   
+      
+    case "SET_DOC":
+        let {rurl, doc} = action
+        var page  = getPageStatus(state, rurl)
+        var {data} = page;
+        data = {...data, doc}
+        page = {...page, data}
+        newState = setPage(state, page)
+        break
   }
 
   return newState;

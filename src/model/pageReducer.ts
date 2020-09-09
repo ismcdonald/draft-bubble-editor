@@ -68,35 +68,45 @@ export const pageReducer = (state: Model, action: any = {}) => {
       state = resolvePageResource(state,  project) // makes sure this is resolved
 
       page = addPageLinks(page, {project, projects:"/"})
+      
+      
+      // -- filter. Note that for documents etc, query to filter is handled in resolve resouce page
 
-      if (query && query.view) {
-        var view = uriToAction(query.view)
-        if (view) {
-          if (view.type != "REF" && view.type != "PROJECT" && view.type != "HOME") {  // <-- only allow references to Project pages 
-            assert(false, "")  // probably want project
-          } else {
-            const viewRurl = actionToURI({type:view.type, payload:view.payload } ) // <-- reconstruct w/o query
-            const viewQuery = view.meta ? (view.meta as any).query : {};
-            var viewPage:PageState<any,any> = createPageResource(state, view.type, viewRurl, view.payload, viewQuery)
-            state = setPage(state, viewPage); 
+
+      page.filter = {showView: (query && query.showView) ? true : false }
+
+      if (query) {
+        
+        if (query.view) {
+          var view = uriToAction(query.view)
+          if (view) {
+            if (view.type != "REF" && view.type != "PROJECT" && view.type != "HOME") {  // <-- only allow references to Project pages 
+              assert(false, "")  // probably want project
+            } else {
+              const viewRurl = actionToURI({type:view.type, payload:view.payload } ) // <-- reconstruct w/o query
+              const viewQuery = view.meta ? (view.meta as any).query : {};
+              var viewPage:PageState<any,any> = createPageResource(state, view.type, viewRurl, view.payload, viewQuery)
+              state = setPage(state, viewPage); 
+              
+              // -- a document might resonably be associated with a project 
+              //   For the moment hardcoding this
+              page = addPageLinks(page, 
+                    {
+                        view: pageTorurl(viewPage),
+                    })
+              // FIX_THIS bug - prevents hide view from 
+              //page.filter.showView = true
+              // -- Hardcoding reference to the underlying project page
             
-            // -- a document might resonably be associated with a project 
-            //   For the moment hardcoding this
-            page = addPageLinks(page, 
-                  {
-                      view: pageTorurl(viewPage),
-                  })
+
             
-            // -- Hardcoding reference to the underlying project page
-          
+            
+            }
 
           
-          
+
+
           }
-
-         
-
-
         }
       }
     } 

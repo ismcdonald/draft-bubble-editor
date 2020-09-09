@@ -45,7 +45,7 @@ export type PageState<a,pm> = {
   data?:a                // <-- the data. maybe this belons in data
                     //    (assuming a unique representation of the resouce as data)
                     // this isn't a very general pmodel structure   
-  filter?:pm   // <--  presentational transformation of the underlying data
+  filter:pm   // <--  presentational transformation of the underlying data
 
   // -- TODO - explicitly model relations of dependent page resouces
   // prev:PageState       <-- in effect a list of dependencies that this page need
@@ -104,7 +104,11 @@ export const createPageResource = (state:Model, type:string,  rurl:string, param
   var resource:PageResource = { type:type.toLowerCase(), rurl, params }
   var status 
 
-  if (type == "TESTDOC") {  // <-- TODO - abstract to get data required resources by type
+  if (type == "TESTDOC") {  // <-- TODO - abstract to get data required resources by type)
+    if (page0) {
+      return page0
+    }
+   
     var data = toTestPageData(params.id)     // obviously, don't hardcode this here
     status = newStatus(state, resource)
     status.isReady = true
@@ -118,7 +122,7 @@ export const createPageResource = (state:Model, type:string,  rurl:string, param
     
 
 
-    return {resource, status, data, filter:null, links:{}} 
+    return {resource, status, data, filter:{showView:true}, links:{}} 
   }
 
 
