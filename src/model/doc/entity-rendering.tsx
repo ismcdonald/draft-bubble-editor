@@ -78,15 +78,14 @@ const TokenSpan = (props:any) => {
       entity.getMutability()
   ) as any;
 
-  var data = entity.getData()
+  //var data = entity.getData()
   
-  var astUID = entity.getData().astRef
+//  var astUID = entity.getData().astRef
 
 
     
   return (
-    <span data-offset-key={props.offsetkey}
-      data-entity-annotaion-id={astUID}
+    <span 
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       style={style}>

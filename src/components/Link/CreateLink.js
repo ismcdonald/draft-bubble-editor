@@ -7,6 +7,7 @@ import { NavToLogin, NavToHome } from "../../model/pageReducer";
 import { Doc , Text } from "../../model/doc/Doc";
 import HomeIcon from '@material-ui/icons/Home';
 import Link from 'redux-first-router-link'
+import { useParams } from "../../model/ps/usePageLoader";
 
 const INITIAL_STATE = {
   description: "",
@@ -14,9 +15,10 @@ const INITIAL_STATE = {
 };
 
 function CreateLink() {
-  console.log(" -- rendering create ---")
+  // console.log(" -- rendering create ---")
   const { firebase, user } = React.useContext(FirebaseContext);
- 
+  const params = useParams()
+  const {project} = params
   const dispatch = useDispatch()
 
   const { handleChange, handleSubmit, values, errors } = useFormValidation(
@@ -34,7 +36,8 @@ function CreateLink() {
       var docJson = JSON.stringify(doc)
 
       const newContent = {
-        description,
+        title:description,
+        project,
         content,
         docJson,
         postedBy: {

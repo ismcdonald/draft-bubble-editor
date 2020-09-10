@@ -7,7 +7,7 @@ var r = 0.7  // <-- makeing the images a bit smaller
 
 
 export const Quote = (props:any) => {
-  console.log('=== rendering quote')
+  //console.log('=== rendering quote')
 
   if (!props.blockProps) {
     return (<>{props.children}</>)

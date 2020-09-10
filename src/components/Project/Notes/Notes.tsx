@@ -111,8 +111,9 @@ const toCpTxt = (page: NotesState, dispatch: Function) => (
 };
 
 const NotesView = ({ page, quoteFn }: NotesProps) => {
-  let { rurl } = page.resource;
+  let { rurl, params } = page.resource;
   let { filter } = page;
+
   //var filter:any, setFilter:any;
   //([filter, setFilter] = useState({col:null}));
   const dispatch = useDispatch();
@@ -150,13 +151,22 @@ const NotesView = ({ page, quoteFn }: NotesProps) => {
             `[${page.resource.params.ref}]`
           )}
         </div>
-          
+        <div style={{height:120}}>
+          <img style={{width:75, height:100,  marginBottom:0,
+              marginRight:10,
+              float:"left", borderRadius:"5" }} 
+              src={`/data/project/${params.user}/${params.pname}/__img_s/${params.ref}.png`}/>
 
-        <h1 style={{textAlign:"center"}}>  {name} 
-        {"  "}
-         <span style={{fontSize:15}}>[{page.resource.params.ref}]</span> 
-     
-         </h1>
+
+
+
+          <h1 style={{textAlign:"center"}}>  {name} 
+          {"  "}
+          <span style={{fontSize:15}}>[{page.resource.params.ref}]</span> 
+      
+          </h1>
+        </div>
+      
         {pages.map((page, i) => renderPage(page, cpTxt, quoteFn, i))}
       </span>
     </div>
@@ -299,12 +309,13 @@ const renderNoteOnly = (
         {" "}
       </>
       }
-
+   {!quoteFn && 
+    <>
       <a className="bubble-action" onClick={(e) => cpTxt(e, note, true)}>
         (copy)
       </a>
-      {!quoteFn && 
-      <>
+   
+    
         {"  "}
         <a className="bubble-action" onClick={(e) => cpTxt(e, note, false)}>
           (link)

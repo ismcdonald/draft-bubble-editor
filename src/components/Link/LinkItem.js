@@ -6,7 +6,6 @@ import Link from "redux-first-router-link"
 import { useDispatch } from "react-redux";
 import { NavToLogin } from "../../model/pageReducer";
 
-import HomeIcon from '@material-ui/icons/Home';
 
 
 function LinkItem({ content, index, showCount }) {
@@ -54,9 +53,10 @@ function LinkItem({ content, index, showCount }) {
           <div>
             <h2>
                 <Link to={`/doc/${content.postedBy.name}/${content.id}`}>
-                    {content.description}
+                    {content.title}
                 </Link>
             </h2>
+            <div>{content.description}</div>
           </div>
           <div className="f6 lh-copy gray">
              Posted by {content.postedBy.name}{" "}

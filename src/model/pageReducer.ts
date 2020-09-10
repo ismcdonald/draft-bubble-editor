@@ -17,12 +17,12 @@ export const routesMap = {
   REF: "/project/:user/:pname/:ref", 
   
   // -- documents
-  DOCS:"/docs/:user?", 
+  DOCS:"/docs/:user/:project", 
   DOC: "/doc/:user/:id",   
   TESTDOC:"/testdoc/:user:id",
 
   // -- document api 
-  CREATE: "/create",
+  CREATE: "/create/:project",
 
   LINK: "/link/:linkId" 
   //[NOT_FOUND]: '404'

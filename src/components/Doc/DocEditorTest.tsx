@@ -241,7 +241,7 @@ const DocEditorTest = ()  => {
 
 
 function getBlockStyle(block:ContentBlock) {
-  console.log(`--- rendering ${block.getType()}`)
+  //console.log(`--- rendering ${block.getType()}`)
 
   switch (block.getType()) {
     

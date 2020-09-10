@@ -15,6 +15,7 @@ function LinkList() {
   //const isNewPage = props.location.pathname.includes("new");
   const {isNewPage} = params
 
+  var shouldFilter = params.project && params.project != "all"
 
   React.useEffect(() => {
     getLinks(user);
@@ -28,6 +29,8 @@ function LinkList() {
   }
 
   function renderContent() {
+    console.log('x')
+    
     if (isNewPage) {
       return content;
     } else {
@@ -44,12 +47,34 @@ function LinkList() {
         ...doc.data(),
       };
     });
-    console.log({content});
-    setContent(content);  // <--  put in reducer ... 
-    return content;
+
+    var byProject = {}
+    for (var item of content) {
+      var project = item.project || "unknown"
+      var items = byProject[project] ||  []
+      byProject[project] = items
+      items.push(item)
+      console.log({item})
+    }
+
+    var keys = Object.keys(byProject)
+    keys = keys.sort()
+
+    var out = []
+    for (var key of keys) {
+      if (!shouldFilter || key == params.project) {
+        out.push({project:key, items:byProject[key]})
+      }
+    }
+
+
+    // -- sort by project 
+    console.log({out});
+    setContent(out);  // <--  put in reducer ... 
+    return out;
   }
 
-  console.log("-- rendering list ");
+  //console.log("-- rendering list ");
 
   return (
     <div>
@@ -57,11 +82,18 @@ function LinkList() {
         <Link to="/">
           <HomeIcon  />
         </Link> 
-      </div>
-      <h1>Recent Notes By Project </h1>
-      {renderContent().map((doc, i) => (
-        <LinkItem key={doc.id} showCount={true} content={doc} index={i + 1} />
-      ))}
+      </div> 
+      <h1>Notes on Readings {shouldFilter ? `for ${params.project}` : ":"} </h1>
+      {content.map((item, i) => (
+        <div key= {i}>
+          <h2>{item.project} </h2>
+          {item.items.map((doc) => (
+            <LinkItem key={doc.id} showCount={true} content={doc} index={i + 1} />))}
+        </div>
+          ))}
+
+            
+    
     </div>
   );
 }

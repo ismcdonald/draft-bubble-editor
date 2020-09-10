@@ -59,29 +59,41 @@ const renderPage = (page: PageState<any, any>, user:any) => {
       console.log("rendering home)");
       return (
         <div>
-          {user && (user.dispayName == "ism")  &&  
-          <div>
-            <h2>admin</h2>
-            <Link to={"testdoc/text?v=X"}>text </Link>{" "}
-            <Link to={"testdoc/quote?v=y"}>quote </Link>{" "}
-            <Link to={"testdoc/quote2"}>quote2 </Link>{" "}
-            <Link to={"register"}>register </Link>{" "}
-
-          </div>}
+         
           <h1>Lea's Projects:</h1>
             <Link to={"project/lea/essay"}>essay</Link>{" "}
-            <Link to={"project/lea/thesis"}>essay</Link>{" "}
-
-          <h1>Ian's Projects:</h1>
+            <Link to={"project/lea/thesis"}>thesis</Link>{" "}
             <Link to={"project/ian/epistemic"}>epistemic</Link>{" "}
 
 
           <div>
-              <h1>Recent Notes:</h1>
-              <Link to={"docs"}>notes on essay</Link> {" "}
-            <h2>test docs</h2>
-          </div>
+              <div>{" "}</div>
+              <h1>{" "}</h1>
+              <h1> Notes:</h1> 
+              <Link to={"docs/lea/all"}>all</Link> {"  "}
+              <Link to={"docs/lea/essay"}>essay</Link> {"  "}
+              <Link to={"docs/lea/thesis"}>thesis</Link> {"  "}
+              <Link to={"docs/ian/epistemic"}>epistemic</Link> {"  "}
 
+          </div>
+          {user && (user.displayName == "ism")  &&  
+          
+          <div>
+            <h1>{" "}</h1>
+            <h2>admin</h2>
+            <div>
+              create Notes on:
+              <Link to={"create/essay"}> essay </Link>{" "}
+              <Link to={"create/thesis"}> thesis </Link>{" "}
+              <Link to={"create/epistemic"}> epistemic  </Link>{" "}
+          </div>
+            <div>
+            <Link to={"testdoc/text?v=X"}>text </Link>{" "}
+            <Link to={"testdoc/quote?v=y"}>quote </Link>{" "}
+            <Link to={"testdoc/quote2"}>quote2 </Link>{" "}
+            <Link to={"register"}>register </Link>{" "}
+          </div>
+          </div>}
         </div>
       );
 

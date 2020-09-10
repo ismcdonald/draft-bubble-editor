@@ -19,7 +19,7 @@ import {Quote} from "./Quote"
 //const OL_WRAP = <ol className={cx('public/DraftStyleDefault/ol')} />;
 //const PRE_WRAP = <pre className={cx('public/DraftStyleDefault/pre')} />;
 
-const REGION_1 = <div className='CodeEditor-region-1'/>;
+const REGION_1 =<div className='CodeEditor-region-1'/>;
 const REGION_2 = <div className='CodeEditor-region-2'/>;
 const REGION_3 =  <div className='CodeEditor-region-3'/>;
               

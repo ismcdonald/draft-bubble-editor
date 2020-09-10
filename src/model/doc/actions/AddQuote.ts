@@ -2,11 +2,10 @@ import { docToAnn } from './../page-annotation';
 import { PageState } from './../../resource/PageResource';
 import { addAnnotation } from './../quote-model';
 import { updateContent } from './../doc-actions';
-import { NoteRef, DocContent } from './../Doc';
+import { DocContent } from './../Doc';
 import { EditorState, ContentBlock, Modifier } from 'draft-js';
 import { getBlockSel, createSel, createLineSel } from '../doc-util';
-import { OrderedMap } from 'immutable'
-import { bq, blockToContent } from '../draft-to-doc';
+import { bq } from '../draft-to-doc';
 import { showContent } from '../draft-util';
 
 export const DOC_ADD_REF:string = "DOC_ADD_REF"

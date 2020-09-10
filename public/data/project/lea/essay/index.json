@@ -3,6 +3,12 @@
   "user": "lea",
   "resources": [
     {
+      "ref": "Luepnitz08",
+      "path": "further papers",
+      "name": "Thinking in the space between Winnicott and Lacan",
+      "authors": []
+    },
+    {
       "ref": "Holmes17",
       "path": "core/weekend 2",
       "name": "Attachment and Psychodynamic Perspectives on Resilience",
@@ -65,15 +71,15 @@
       ]
     },
     {
-      "ref": "Bienenfeld",
-      "path": "core/weekend 1/ian",
-      "name": "Self Psychology",
-      "authors": []
-    },
-    {
       "ref": "Casement91a",
       "path": "core/weekend 1/ian",
       "name": "Object Use and Impingement",
+      "authors": []
+    },
+    {
+      "ref": "Bienenfeld",
+      "path": "core/weekend 1/ian",
+      "name": "Self Psychology",
       "authors": []
     },
     {
@@ -141,6 +147,20 @@
       ]
     },
     {
+      "ref": "Mitchell98",
+      "path": "What is Object Relations Theory Anyway",
+      "name": "Relational Concepts in Psychoanalysis An Integration",
+      "authors": []
+    },
+    {
+      "ref": "Thurschwell2009",
+      "path": "What is Object Relations Theory Anyway",
+      "name": "sigmund freud",
+      "authors": [
+        "thurschwell, P"
+      ]
+    },
+    {
       "ref": "Dowds04_",
       "path": "full pdfs",
       "name": "Beyond the Frustrated Self",
@@ -155,17 +175,17 @@
       "authors": []
     },
     {
-      "ref": "Charles18_",
+      "ref": "Charles18Ch4_",
       "path": "other papers",
-      "name": "Introduction to Contemporary Psychoanalysis",
+      "name": "A CONTEMPORARY KLEINIAN: BIONIAN PERSPECTIVE",
       "authors": [
         "Charles, M"
       ]
     },
     {
-      "ref": "Charles18Ch4_",
+      "ref": "Charles18_",
       "path": "other papers",
-      "name": "A CONTEMPORARY KLEINIAN: BIONIAN PERSPECTIVE",
+      "name": "Introduction to Contemporary Psychoanalysis",
       "authors": [
         "Charles, M"
       ]
