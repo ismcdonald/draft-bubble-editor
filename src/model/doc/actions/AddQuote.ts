@@ -43,7 +43,7 @@ if (doc.$$ == "Quote") {
     //    - it isn't the first block (title)
     var prevBlock:ContentBlock = content.getBlockBefore(key)
     
-    showContent(content)    
+    //showContent(content)    
 
 
     // -- split twice
@@ -52,7 +52,7 @@ if (doc.$$ == "Quote") {
     content = Modifier.replaceText(content, lineSel!, "    ");
     var midSel = createSel(key, 1, key, 1)
     content = Modifier.splitBlock(content, midSel)
-    showContent(content)  
+    //showContent(content)  
     var blockA = content.getBlockAfter(prevBlock.getKey())
     var blockB = content.getBlockAfter(blockA.getKey())
     var blockC = content.getBlockAfter(blockB.getKey())
@@ -64,19 +64,19 @@ if (doc.$$ == "Quote") {
     blockB = content.getBlockAfter(blockA.getKey())
     blockC = content.getBlockAfter(blockB.getKey())
 
-    showContent(content)
+    //showContent(content)
 
     // -- now modify the middle block
     var midLineSel = createLineSel(blockB)
     content = Modifier.replaceText(content, midLineSel, lines.join("\n"));
     midLineSel = createLineSel(content.getBlockForKey(keyB))
     content = Modifier.setBlockType(content, midLineSel, bq);
-    showContent(content)
+    //showContent(content)
     // -- add annotation
     block = content.getBlockForKey(keyB)
     var annData = docToAnn(doc, page)
     content = addAnnotation(content,  block, doc.$$, annData)
-    showContent(content)
+    //showContent(content)
     block = content.getBlockForKey(keyB)
     //var data:DocContent = blockToContent(block, content)!
 
@@ -89,7 +89,7 @@ if (doc.$$ == "Quote") {
     //  -- and set selection of the final block  
     var keyC = blockC.getKey()
     var newSel = createSel(keyC, 0, keyC, 0)
-    showContent(content)
+    //showContent(content)
     state = updateContent(state, content);
     state = EditorState.acceptSelection(state, newSel);
     state = EditorState.forceSelection(state, state.getSelection());

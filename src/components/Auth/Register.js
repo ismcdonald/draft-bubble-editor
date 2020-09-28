@@ -127,7 +127,7 @@ function Register(props) {
                 name="username"
                 icon="user"
                 iconPosition="left"
-                placeholder="Username"
+                placeholder="Username"  
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.username}

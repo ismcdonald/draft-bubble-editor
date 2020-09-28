@@ -30,6 +30,7 @@ export type Quote = {
   $$:"Quote",
   ref:NoteRef
   lines:string[]
+  sec?:string  // <-- TODO - this might reasonably be  interpreted by the renderere 
 }
 
 export type DocContent = Text | Quote
@@ -42,7 +43,7 @@ export type Doc = {
 
 export const Text = (lines:string[]):Text => ({$$:"Text", lines})
 export const NoteRef = (ref:string, user:string, project:string, did:string, pg?:number):NoteRef => ({$$:"NoteRef", ref, project, user, did, pg});
-export const Quote = (ref:NoteRef, lines:string[]):Quote => ({$$:"Quote", ref, lines});
+export const Quote = (ref:NoteRef, lines:string[], sec?:string):Quote => ({$$:"Quote", ref, lines, sec});
 export const Doc = (vs:(Text | Quote)[]):Doc => ({$$:"Doc", vs})
 
 

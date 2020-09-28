@@ -31,7 +31,7 @@ function CreateLink() {
     if (!user) {
       dispatch(NavToLogin)  // <-- UI should ensure this never happens 
     } else {
-      let { description, content } = values;
+      let { description, content , path} = values;
       var doc = Doc([Text(["# " + description])])
       var docJson = JSON.stringify(doc)
 
@@ -39,6 +39,7 @@ function CreateLink() {
         title:description,
         project,
         content,
+        path: path || "",
         docJson,
         postedBy: {
           id: user.uid,
@@ -82,6 +83,16 @@ function CreateLink() {
         value={values.content}
         onChange={handleChange}
         className={errors.content && "error-input"}
+      />
+
+    <input  
+        name="path"
+        placeholder=""
+        autoComplete="off"
+        type="text"
+        value={values.path}
+        onChange={handleChange}
+        className={errors.path && "error-input"}
       />
       {errors.content && <p className="error-text">{errors.content} </p>}
 

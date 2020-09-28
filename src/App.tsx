@@ -61,21 +61,28 @@ const renderPage = (page: PageState<any, any>, user:any) => {
         <div>
          
           <h1>Lea's Projects:</h1>
+            <div>Hi Lea. This link has all the papers and bubble notes on thieir own</div>
             <Link to={"project/lea/essay"}>essay</Link>{" "}
-            <Link to={"project/lea/thesis"}>thesis</Link>{" "}
-            <Link to={"project/ian/epistemic"}>epistemic</Link>{" "}
 
 
           <div>
               <div>{" "}</div>
               <h1>{" "}</h1>
               <h1> Notes:</h1> 
-              <Link to={"docs/lea/all"}>all</Link> {"  "}
-              <Link to={"docs/lea/essay"}>essay</Link> {"  "}
-              <Link to={"docs/lea/thesis"}>thesis</Link> {"  "}
-              <Link to={"docs/ian/epistemic"}>epistemic</Link> {"  "}
+              <div> And this section is the documents that distill quotes and such from the bubble notes</div>
+              <div>     
+                
+                 <Link to={"docs/lea/winnicott"}>notes on Winnicott</Link> {"  "}
+                 <div>
 
+                 <Link to={"docs/lea/klein"}>notes on Klein</Link> {"  "}
+                 </div>
+              </div>
+
+              <Link to={"docs/lea/all"}>other stuff (ignore for now)</Link> {"  "}
+             
           </div>
+
           {user && (user.displayName == "ism")  &&  
           
           <div>
@@ -83,13 +90,14 @@ const renderPage = (page: PageState<any, any>, user:any) => {
             <h2>admin</h2>
             <div>
               create Notes on:
+              <Link to={"create/winnicott"}> winnicott </Link>{" "}
+              <Link to={"create/klein"}> klein </Link>{" "}
+
               <Link to={"create/essay"}> essay </Link>{" "}
               <Link to={"create/thesis"}> thesis </Link>{" "}
               <Link to={"create/epistemic"}> epistemic  </Link>{" "}
           </div>
             <div>
-            <Link to={"testdoc/text?v=X"}>text </Link>{" "}
-            <Link to={"testdoc/quote?v=y"}>quote </Link>{" "}
             <Link to={"testdoc/quote2"}>quote2 </Link>{" "}
             <Link to={"register"}>register </Link>{" "}
           </div>
@@ -155,3 +163,6 @@ export default App;
                   <Route path="/link/:linkId" component={LinkDetail} />
                 </Switch>
                 */
+//            <Link to={"project/lea/thesis"}>thesis</Link>{" "}
+ //           <Link to={"project/ian/epistemic"}>epistemic</Link>{" "}
+//</div>

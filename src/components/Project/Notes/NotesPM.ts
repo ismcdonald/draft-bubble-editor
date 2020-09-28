@@ -1,5 +1,9 @@
+import { BubbleNotes, NotesFilter } from './../../../model/domain/BubbleNotes';
+import { PageState } from './../../../model/resource/PageResource';
 import { BubbleDoc, BubbleNoteOrGroup, BubbleNote } from '../../../model/domain/BubbleNotes';
+import { SECTION } from './filter';
 
+export type NotesState = PageState<BubbleNotes, NotesFilter>;
 
 /**
  * presentation model for the bubble does
@@ -17,6 +21,27 @@ export const toPages = (doc: BubbleDoc): PagePM[] => {
   var node: BubbleNoteOrGroup;
   var pNodes: BubbleNoteOrGroup[] = [];
   var nextPg: number;
+
+  // --  HACK ... section is dynamically calculated, should be done as a pmodel layer
+  var currentSection:any = null
+  var node0:BubbleNoteOrGroup
+  for (node0 of doc.nodes as any) {
+  
+    if ((node0 as any).col == SECTION) {
+      currentSection = (node0 as any).did;
+    }
+    if (node0.$$ == "Group") {
+      for (var childNode of node0.nodes) {
+        childNode.section = currentSection
+      }
+    }
+    
+    node0.section = currentSection
+  }
+
+
+
+
   for (node of doc.nodes as any) {
     var nextPg = getNextPage(node, doc.nodes);
     ({ pNodes, out, pg } = updatePageGroup(out, pNodes, pg, nextPg));
@@ -68,29 +93,6 @@ const toPM = (pg: number, notes: BubbleNoteOrGroup[]) => ({
 
 // -- filter functionality
 
-export const filterPM = (
-  pages: PagePM[],
-  fn: (page: BubbleNote) => boolean
-): PagePM[] => {
-  var filtered = pages.map((page: PagePM) => {
-    var notes = page.notes
-      .map((node) => {
-        if (node.$$ == "Group") {
-          var nodes = node.nodes.filter(fn);
-          return nodes.length > 0 ? { $$: "Group", nodes } : null;
-        } else {
-          return fn(node) ? node : null;
-        }
-      })
-      .filter(notNull);
-
-    return notes.length > 0 ? { ...page, notes } : null;
-  });
-  var out = filtered.filter(notNull) as any;
-  return out;
-};
-
-const notNull = (v: any) => v != null;
 
 const NOTE_TYPES = {
   Excerpt: true,

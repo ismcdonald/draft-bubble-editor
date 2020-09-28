@@ -7,6 +7,8 @@ import { useDispatch } from "react-redux";
 import { NavToLogin } from "../../model/pageReducer";
 
 
+var simple = true
+
 
 function LinkItem({ content, index, showCount }) {
   // TODO - pass these in as params ?
@@ -56,9 +58,10 @@ function LinkItem({ content, index, showCount }) {
                     {content.title}
                 </Link>
             </h2>
-            <div>{content.description}</div>
+            {!simple ? <div>{content.description}</div> : ""}
           </div>
-          <div className="f6 lh-copy gray">
+          {!simple ? 
+          (<div className="f6 lh-copy gray">
              Posted by {content.postedBy.name}{" "}
             {formatDistanceToNow(content.created)}
             {" | "} 
@@ -77,7 +80,7 @@ function LinkItem({ content, index, showCount }) {
                 </a>
               </>
             )}
-        </div>
+        </div>) : ""}
       </div>
     </div>
   );

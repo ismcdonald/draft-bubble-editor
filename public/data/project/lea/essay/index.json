@@ -17,19 +17,19 @@
       ]
     },
     {
-      "ref": "Karen90",
-      "path": "core/weekend 2",
-      "name": "Becoming Attached",
-      "authors": [
-        "Karen, Robert"
-      ]
-    },
-    {
       "ref": "Stern98",
       "path": "core/weekend 2",
       "name": "Therapeutic Change",
       "authors": [
         "Strern, Daniel N"
+      ]
+    },
+    {
+      "ref": "Karen90",
+      "path": "core/weekend 2",
+      "name": "Becoming Attached",
+      "authors": [
+        "Karen, Robert"
       ]
     },
     {
@@ -63,12 +63,10 @@
       ]
     },
     {
-      "ref": "FreudMM",
-      "path": "core/weekend 1",
-      "name": "Mourning and Melancholia",
-      "authors": [
-        "Freud, S"
-      ]
+      "ref": "Bienenfeld",
+      "path": "core/weekend 1/ian",
+      "name": "Self Psychology",
+      "authors": []
     },
     {
       "ref": "Casement91a",
@@ -77,10 +75,12 @@
       "authors": []
     },
     {
-      "ref": "Bienenfeld",
-      "path": "core/weekend 1/ian",
-      "name": "Self Psychology",
-      "authors": []
+      "ref": "FreudMM",
+      "path": "core/weekend 1",
+      "name": "Mourning and Melancholia",
+      "authors": [
+        "Freud, S"
+      ]
     },
     {
       "ref": "Casement91b",
@@ -127,15 +127,15 @@
       "authors": []
     },
     {
-      "ref": "Brodie20",
-      "path": "What is Object Relations Theory Anyway",
-      "name": "Object Relations and Intersubjective Theories in the Practice of Psychotherapy",
-      "authors": []
-    },
-    {
       "ref": "Frankland10",
       "path": "What is Object Relations Theory Anyway",
       "name": "The Little Psychotherapy Book Object Relations in Practice",
+      "authors": []
+    },
+    {
+      "ref": "Gomez17",
+      "path": "What is Object Relations Theory Anyway",
+      "name": "Developments in Object Relations",
       "authors": []
     },
     {
@@ -159,6 +159,12 @@
       "authors": [
         "thurschwell, P"
       ]
+    },
+    {
+      "ref": "Brodie20",
+      "path": "What is Object Relations Theory Anyway",
+      "name": "Object Relations and Intersubjective Theories in the Practice of Psychotherapy",
+      "authors": []
     },
     {
       "ref": "Dowds04_",

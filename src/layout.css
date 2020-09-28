@@ -787,6 +787,16 @@ a:hover {
 
 }
 
+.bubble-selected-did {
+  border-left: 4px solid;
+  border-right:4px solid;
+  border-color:#e70d3d;;
+  border-radius: 0;
+  background: #fcf9f9;
+
+}
+
+
 .bubble-link {
   color: #fceaee;
   font-family: "Fjalla One", sans-serif;
@@ -862,12 +872,21 @@ a:hover {
 
 .bubble-yellow {
   padding-left: 20px;
- background: #f9e0e5;
+  background: #f9e0e5;
   border-left: 10px solid;
   border-color: #e8c05c;
   margin-left: 30px;
   font-size: 13px;
   border-radius: 0px;
+}
+
+.divider {
+  width:500px;
+  border-bottom: 1px solid;
+  border-color: #aaaaaa;
+  margin-bottom:15px;
+  margin-top: 15px;
+
 }
 
 .bubble-blue {
@@ -927,6 +946,7 @@ a:hover {
   color: #828282;
   margin-left: 0.25rem;
 }
+
 
 
 

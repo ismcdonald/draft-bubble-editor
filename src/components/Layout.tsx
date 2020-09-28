@@ -5,6 +5,7 @@ import React from "react";
 //import Header from "./Header";
 import "../layout.css";
 import Link from "redux-first-router-link"
+import { withStyles } from "@material-ui/core";
 
 var data = {
   site: {
@@ -20,8 +21,20 @@ var data = {
 
 
 
-const Layout = ({ children, user }: any) => {
-  return (
+const styles = theme => ({
+  root: {
+    flexGrow: 1
+  },
+  paper: { 
+    padding: theme.spacing(2),
+    textAlign: 'center',
+    color: theme.palette.text.secondary
+  }
+});
+
+const Layout = withStyles(styles)( ({ classes, children, user }) => {
+  
+    return (
     <>
       <div
         style={{
@@ -36,6 +49,6 @@ const Layout = ({ children, user }: any) => {
       </div>
     </>
   );
-};
+})
 
 export default Layout;

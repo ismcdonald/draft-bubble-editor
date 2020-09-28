@@ -50,9 +50,12 @@ function LinkList() {
 
     var byProject = {}
     for (var item of content) {
-      var project = item.project || "unknown"
-      var items = byProject[project] ||  []
-      byProject[project] = items
+      var project = (item.project || "unknown") 
+      var path =  project + (item.path ? `/${item.path}` :"")
+    
+    
+      var items = byProject[path] ||  []
+      byProject[path] = items
       items.push(item)
       console.log({item})
     }
@@ -62,8 +65,8 @@ function LinkList() {
 
     var out = []
     for (var key of keys) {
-      if (!shouldFilter || key == params.project) {
-        out.push({project:key, items:byProject[key]})
+      if (!shouldFilter || (key == params.project ) | (key.indexOf(params.project + "/") == 0)) {
+        out.push({path:key, items:byProject[key]})
       }
     }
 
@@ -86,7 +89,8 @@ function LinkList() {
       <h1>Notes on Readings {shouldFilter ? `for ${params.project}` : ":"} </h1>
       {content.map((item, i) => (
         <div key= {i}>
-          <h2>{item.project} </h2>
+          <div className="divider">{" "}</div>
+          <h2>{item.path} </h2>
           {item.items.map((doc) => (
             <LinkItem key={doc.id} showCount={true} content={doc} index={i + 1} />))}
         </div>

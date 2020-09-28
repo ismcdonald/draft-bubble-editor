@@ -1,5 +1,7 @@
+import { actionToURI } from './../pageReducer';
 import { NoteRef, Quote } from './Doc';
 import { PageState } from '../resource/PageResource';
+import { SECTION } from '../../components/Project/Notes/filter';
 
 
 export const refToImg = (ref:NoteRef, size:string):string => {
@@ -18,14 +20,40 @@ export const docToAnn = (doc:Quote, page:PageState<any,any>):any =>  {
   //  -- view is from view page 
   
   let {resource:r} = page
+  
+  //  REF: "/project/:user/:pname/:ref",  <--- FIX_THIS - this
+  
+  var {ref:nr, sec} = doc
+  var {user, project, did} = nr
 
-  //  REF: "/project/:user/:pname/:ref", 
 
-  var {ref:nr} = doc
-  var view = `/project/${nr.user}/${nr.project}/${nr.ref}`
+  var select = did
+  var sel = sec
+  var col = null
+  if (sec) {
+    col = [SECTION]
+  }
+  var viewAction:any = 
+  {type:"REF", 
+    payload:{  //   `/project/${nr.user}/${nr.project}/${nr.ref}`
+      user,
+      pname:project,
+      ref:nr.ref
+    }, 
+    query: {
+      sel,
+      col,
+      select
+    }
 
-  // TODO - abstact 
-  var ref = {type:r.type.toUpperCase(), payload: r.params, query:{view, showView:true}}
+  }
+
+  
+  var view = actionToURI(viewAction)
+  var showView = true
+ 
+
+  var ref = {type:r.type.toUpperCase(), payload: r.params, query:{view, showView}}
   //var ref = {type:"TESTDOC", payload: { id:"quote2", query:{view:"/project/lea/essay/Kealy"}}}
   
   

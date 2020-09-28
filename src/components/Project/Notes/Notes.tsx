@@ -3,12 +3,16 @@ import { useDispatch } from "react-redux";
 import { usePageLoader, useViewNav } from "../../../model/ps/usePageLoader";
 import ResourceStatus from "../ResourceStatus";
 import { useMemo } from "react";
-import { toPages, filterPM, PagePM } from "./NotesPM";
+import { toPages,  PagePM, NotesState } from "./NotesPM";
+import {filterPM } from "./FilterPM"
+import {FilterUI} from "./FilterUI"
 import copy from "clipboard-copy";
 import { toNoteFilterFn } from "./filter";
-import { PageState } from "../../../model/resource/PageResource";
+
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
+
 import {
-  NotesFilter,
   BubbleNotes,
   BubbleNote,
   BubbleNoteOrGroup,
@@ -16,6 +20,7 @@ import {
 import Link from "redux-first-router-link";
 import { actionToURI } from "../../../model/pageReducer";
 import { NoteRef, Quote } from "../../../model/doc/Doc";
+import { navAction, navSearch, navSection } from "./navAction";
 
 
 type Props = {
@@ -31,14 +36,14 @@ const Notes = ({rurl, quoteFn}:Props) => {
   let {user,pname, ref} = page.resource.params
   
   // -- decoate our quote function to get a quote rather than a bubbl enote
-  const quoteFn2 = (note:BubbleNote) => {
+  const quoteFn2 = quoteFn ? (note:BubbleNote) => {
     
     let {did, text, pg} = note
 
     var noteRef:NoteRef = NoteRef(ref, user, pname, did, pg  )
-    var quote:Quote = Quote(noteRef, [text])
-    quoteFn(quote)
-  }
+    var quote:Quote = Quote(noteRef, [text], note.section)
+    quoteFn(quote)  
+  } : null
 
 
   return page.data ? <NotesView page={page} quoteFn={quoteFn2}/> : <ResourceStatus page={page} />;
@@ -46,7 +51,6 @@ const Notes = ({rurl, quoteFn}:Props) => {
 
 // -- encodes application state of node filtering
 
-type NotesState = PageState<BubbleNotes, NotesFilter>;
 
 interface NotesProps {
   page: NotesState;
@@ -57,12 +61,6 @@ const style = {
   background: "#F7BECA",
 };
 
-const toggleFilter = (filter: any, col: any) => {
-  if (filter.col == col) {
-    return { col: null };
-  }
-  return { col };
-};
 
 const toCpTxt = (page: NotesState, dispatch: Function) => (
   e: MouseEvent,
@@ -128,18 +126,43 @@ const NotesView = ({ page, quoteFn }: NotesProps) => {
   const filterFn = toNoteFilterFn(filter!);
   const pages = filterFn ? filterPM(pagePM, filterFn) : pagePM; // <--- could memoize
   const nav = useViewNav(rurl)
+  const navAct = navAction;
+  const navSect = navSection(page, nav)  // <-- logic to create actions to select view 
+
+
+  const isSec = (note:BubbleNote) => {
+    return filter && filter.sel && (filter.sel.indexOf(note.did) >= 0)
+  }
+
+  const isSel = (note:BubbleNote) => {
+    var ok = filter && filter.select && note.did == filter.select
+    if (ok) {
+      console.log('x')
+    }
+    return ok
+  }
+
+  const onSearch = (txt:string) => {
+    dispatch(navSearch(page, txt, nav))
+  }
+
+
+  const onClearSearch = (e:any) => {
+    dispatch(navSearch(page, "", nav))
+  }
+
 
   return (
     <div className={"doc-container"}>
       <span>
-        <FilterUI page={page} nav={nav}/>
+        <FilterUI page={page} nav={nav} navAction={navAct}/>
 
         <div className={"bubble-breadcrumbs-bar"}>
           <Link to={nav("/")}>projects</Link> {" > "}
           <Link
             to={nav(`/project/${page.resource.params.user}/${page.resource.params.pname}`)}>
             {page.resource.params.pname}
-          </Link>{" "}
+          </Link>{" "}  
           {" > "}
           {filterFn ? (
             <>
@@ -166,106 +189,33 @@ const NotesView = ({ page, quoteFn }: NotesProps) => {
       
           </h1>
         </div>
-      
-        {pages.map((page, i) => renderPage(page, cpTxt, quoteFn, i))}
+        {pages.map((page, i) => renderPage(page, cpTxt, quoteFn, navSect,  isSec, isSel, i))}
       </span>
     </div>
   );
 };
 
-const hasCol = (filter: NotesFilter, col: string): boolean => {
-  return filter && filter.col ? filter.col.indexOf(col) >= 0 : false;
-};
-
-const toFilterPM = (filter?: NotesFilter): FilterBtnPM[] => {
-  var blue: boolean = hasCol(filter!, "blue");
-  var yellow: boolean = hasCol(filter!, "yellow");
-  var green = hasCol(filter!, "green");
-
-  var all = !blue && !yellow && !green;
-
-  return [
-    { label: "all", v: all, ref: "all" },
-    { label: "sections", v: green, ref: "green" },
-    { label: "hilights", v: blue, ref: "blue" },
-    { label: "references", v: yellow, ref: "yellow" },
-  ];
-};
-
-const navAction = (page: NotesState, col: string, nav:any) => {
-  var query = undefined;
-  var { filter } = page;
-  var newCol: string[];
-
-  if (col !== "all") {
-    // -- remove colour filter
-    var oldCol: string[] = filter && filter.col ? filter.col! : [];
-
-    if (hasCol(filter!, col)) {
-      newCol = oldCol.filter((c) => c != col); // remove old colour
-    } else {
-      newCol = [...oldCol, col];
-    }
-
-    if (newCol.length > 0) query = { col: newCol.join(".") };
-  } else {
-    query = undefined;
-  }
 
 
 
-  var action:any = { type: "REF", payload: page.resource.params, query };
-  var uri = actionToURI(action)
 
-  return nav(uri)
-};
 
-type FilterBtnPM = { label: string; v: boolean; ref: string };
 
-type FilterProps = {
-  page: NotesState
-  nav:any
-}
-const FilterUI = ({ page, nav }:FilterProps) => {
-  
-  const dispatch = useDispatch();
-  const filterPM: FilterBtnPM[] = toFilterPM(page.filter);
-
-  var last = filterPM.length - 1;
-  return (
-    <span className="bubble-filter-bar">
-      {filterPM.map((item: FilterBtnPM, i) => (
-        <span key={i}>
-          <a
-            className={item.v ? "bubble-filter-selected" : ""}
-            onClick={(e: React.SyntheticEvent) =>
-              dispatch(navAction(page, item.ref, nav ))
-            }
-          >
-            {item.label}
-          </a>
-          {i != last ? " | " : ""}
-        </span>
-      ))}
-    </span>
-  );
-};
-
-const renderPage = (page: PagePM, cpTxt: any, quoteFn:any, i:any) => {
+const renderPage = (page: PagePM, cpTxt: any, quoteFn:any, navSection:any, isSec:any, isSel:any,i:any) => {
   let { pg, notes } = page;
 
   return (
     <div key={i} className="bubble-pg-container">
       <span className="bubble-pg">{pg}</span>
-      {notes.map((note, i) => renderNote(note, cpTxt, quoteFn, i))}
+      {notes.map((note, i) => renderNote(note, cpTxt, quoteFn, navSection, isSec, isSel, i))}
     </div>
   );
 };
 
-const renderNote = (note: BubbleNoteOrGroup, cpTxt: any, quoteFn:any, i:any) =>
+const renderNote = (note: BubbleNoteOrGroup, cpTxt: any, quoteFn:any, navSection:any, isSec:any, isSel:any, i:any) =>
   note.$$ == "Group" ? (
     <div  key ={i} className="bubble-group bubble-colour-tagged">
-      {renderGroup(note.nodes, cpTxt, quoteFn)}
+      {renderGroup(note.nodes, cpTxt, quoteFn, navSection, isSec, isSel )}
     </div>
   ) : (
     <div  key ={i}
@@ -274,49 +224,76 @@ const renderNote = (note: BubbleNoteOrGroup, cpTxt: any, quoteFn:any, i:any) =>
         (note.col == "green" ? " bubble-wrap-section-title" : "")
       }
     >
-      {renderNoteOnly(note, false, false, cpTxt, quoteFn, i)}
+      {renderNoteLeaf(note, false, false, cpTxt, quoteFn,navSection, isSec, isSel,i)}
     </div>
   );
 
-const renderGroup = (nodes: BubbleNote[], cpTxt: any, quoteFn:any) => {
+const renderGroup = (nodes: BubbleNote[], cpTxt: any, quoteFn:any, navSection:any, isSec:any, isSel:any) => {
   return (
     <div className="bubble-group-inner">
       {nodes.map((note, i) =>
-        renderNoteOnly(note, true, i === nodes.length - 1, cpTxt, quoteFn, i)
+        renderNoteLeaf(note, true, i === nodes.length - 1, cpTxt, quoteFn,navSection, isSec, isSel,  i)
       )}
     </div>
   );
 };
 
-const renderNoteOnly = (
+const renderNoteLeaf = (
   note: BubbleNote,
   isGroup: boolean = false,
   isLast: boolean = false,
   cpTxt: any,
   quoteFn:any,
+  navSection:any,
+  isSec:any,
+  isSel:any,
   i:any
-  
+   
 ) => {
   var style = `bubble ${isGroup ? "bubble-g" : ""} ${isLast ? "bubble-g-last " : ""} bubble-${note.col}`;
+
+  var isSection = (note.col == "green")
+  var isSelection = isSel(note)
+  if (isSelection) {
+    style += " bubble-selected-did";
+  }
+
   return (
-    <div key={i} className={style}>
-      {note.text}
+
+    <div key ={i} className={style}>
+
+      {isSection ? (!isSec(note) ?
+        (<Link to={navSection(note, true)} >
+          <AddCircleOutlineIcon style={{color:"#340410", paddingTop:6}} /> 
+        </Link>) : 
+        (<Link to={navSection(note, false)}>
+          <RemoveCircleOutlineIcon style={{color:"#340410", paddingTop:6}}  />
+        </Link>) )
+         : null}
+
+ 
+      {isSelection ? 
+          (<span className="bubble-select-did">{note.text}</span>)
+          :
+          note.text
+      }
+
       {"    "}
       {quoteFn &&  <>
         <a className="bubble-action" onClick={(e) => quoteFn(note)}>
-        (quote)
+          (quote)
         </a>
         {" "}
       </>
       }
-   {!quoteFn && 
-    <>
+
       <a className="bubble-action" onClick={(e) => cpTxt(e, note, true)}>
-        (copy)
+         {quoteFn ? " |  " : ""} (copy)
       </a>
-   
-    
-        {"  "}
+      
+      {!quoteFn && 
+        <>
+        {"  |  "}
         <a className="bubble-action" onClick={(e) => cpTxt(e, note, false)}>
           (link)
         </a>
@@ -325,4 +302,49 @@ const renderNoteOnly = (
   );
 };
 
+
+type SearhBarProps = {
+  txt:string
+  onSearch:any
+  onClear:any
+}
+
+const SearchBar = ({txt,onSearch, onClear}:SearhBarProps) => {
+  const BarStyling = {width:300,background:"#ffffff", border:"none", padding:"0.5rem", marginRight:20};
+  
+  var [searchTxt, setSearchTxt] = React.useState("");
+
+
+  React.useEffect(() => {
+    if (txt != searchTxt) {
+      setSearchTxt(txt)
+    }
+  },[txt])
+
+  const onChange = (e:any) => {
+    var txt = e.target.value;
+     setSearchTxt(txt)
+  }
+
+  return (
+    <div style={{marginBottom:15}}>
+      <input 
+      style={BarStyling}
+      key="random1"
+      value={searchTxt}
+      placeholder={"...search"}
+      onChange={onChange}
+      />
+
+      <a onClick={(e:any) => onSearch(searchTxt)}>search</a> <a onClick={onClear}>clear</a>
+    </div>
+
+  );
+}
+
+
 export default Notes;
+//<div>
+
+//<SearchBar txt={filter.txt!} onSearch={onSearch}  onClear={onClearSearch}/>
+//</div>
